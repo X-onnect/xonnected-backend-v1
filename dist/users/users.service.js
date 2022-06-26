@@ -25,6 +25,7 @@ let UsersService = class UsersService {
         return this.userModel.findOne({ email }).exec();
     }
     async findAll() {
+        console.log(user_schema_1.User.name);
         return this.userModel.find().exec();
     }
     async createUser(user) {
