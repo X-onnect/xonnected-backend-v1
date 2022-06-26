@@ -22,8 +22,9 @@ let UsersController = class UsersController {
     async getAll() {
         return await this.usersService.findAll();
     }
-    async update(body) {
-        const { _id, username, password, email } = body;
+    async update(body, req) {
+        const { _id } = req.user;
+        const { username, password, email } = body;
         return await this.usersService.update(_id, username, email, password);
     }
     async deleteUser(body) {
@@ -46,8 +47,9 @@ __decorate([
 __decorate([
     (0, common_1.Put)(),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Request)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "update", null);
 __decorate([

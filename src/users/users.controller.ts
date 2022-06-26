@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Body, Delete } from '@nestjs/common';
+import { Controller, Get, Put, Body, Delete, Request } from '@nestjs/common';
 import { UsersService } from './users.service';
 
 @Controller('user')
@@ -11,8 +11,9 @@ export class UsersController {
     }
 
     @Put()
-    async update(@Body() body) {
-        const { _id, username, password, email } = body;
+    async update(@Body() body, @Request() req) {
+        const { _id } = req.user;
+        const { username, password, email } = body;
         return await this.usersService.update(_id, username, email, password);
     }
 

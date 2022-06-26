@@ -1,4 +1,22 @@
-authentications authentications
+authentications
 -sign up
+--email
+--username
+--password
+
 -log in
--log out
+--email
+--password
+--xrp-wallet-connection
+
+----------------------------------------------
+basic actions - 
+--make a post
+--edit a post
+--delete a post
+--view posts of other people (implement pagination)
+--react to a post
+
+
+---------------------------------------------
+

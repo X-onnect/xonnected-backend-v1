@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { Wallet, WalletDocument, walletBoilerplate } from 'src/schema/wallet.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { HttpCode, HttpException } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 import { Model } from 'mongoose';
 
 
