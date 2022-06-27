@@ -14,6 +14,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
+const exceptions_1 = require("../utils/exceptions");
 const mongoose_1 = require("mongoose");
 const mongoose_2 = require("@nestjs/mongoose");
 const user_schema_1 = require("../schema/user.schema");
@@ -24,12 +25,34 @@ let UsersService = class UsersService {
     async findOne(email) {
         return this.userModel.findOne({ email }).exec();
     }
+    async findUserById(_id) {
+        return this.userModel.findOne({ _id }).exec();
+    }
     async findAll() {
-        return this.userModel.find().exec();
+        return this.userModel.find({}, "-password").exec();
     }
     async createUser(user) {
-        const createdUser = new this.userModel(user);
-        return createdUser.save();
+        let isUserObjectComplete = true;
+        Object.keys(user_schema_1.userDTO).every(key => {
+            if (user[key])
+                return true;
+            else {
+                isUserObjectComplete = false;
+                return false;
+            }
+        });
+        if (!isUserObjectComplete) {
+            throw new exceptions_1.Exceptions.IncompleteRequestException();
+        }
+        const existingUsername = await this.userModel.findOne({ username: user.username }).exec();
+        if (existingUsername)
+            throw new exceptions_1.Exceptions.UsernameExistsException();
+        const existingEmail = await this.userModel.findOne({ email: user.email }).exec();
+        if (existingEmail) {
+            throw new exceptions_1.Exceptions.EmailExistsException();
+        }
+        const createdUser = new this.userModel(Object.assign(Object.assign({}, user), { createdAt: new Date().toISOString() }));
+        return await createdUser.save();
     }
     async update(id, username, email, password) {
         return this.userModel.findByIdAndUpdate(id, { username, email, password });

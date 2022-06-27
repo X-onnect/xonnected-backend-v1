@@ -10,12 +10,15 @@ exports.WalletModule = void 0;
 const common_1 = require("@nestjs/common");
 const wallet_service_1 = require("./wallet.service");
 const wallet_controller_1 = require("./wallet.controller");
+const mongoose_1 = require("@nestjs/mongoose");
+const wallet_schema_1 = require("../schema/wallet.schema");
 let WalletModule = class WalletModule {
 };
 WalletModule = __decorate([
     (0, common_1.Module)({
         providers: [wallet_service_1.WalletService],
         controllers: [wallet_controller_1.WalletController],
+        imports: [mongoose_1.MongooseModule.forFeature([{ name: wallet_schema_1.Wallet.name, schema: wallet_schema_1.WalletSchema }])],
     })
 ], WalletModule);
 exports.WalletModule = WalletModule;
