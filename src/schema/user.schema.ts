@@ -3,8 +3,8 @@ import * as mongoose from 'mongoose';
 
 export type UserDocument = User & mongoose.Document;
 
-interface IdObject {
-  _id: string,
+export interface IdObject {
+  _id: mongoose.Types.ObjectId,
 }
 
 @Schema()
@@ -18,14 +18,14 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ require: true })
+  @Prop({ required: true })
   createdAt: string;
 
-  @Prop({ require: true })
-  subscribers: IdObject[]
+  @Prop({ required: true })
+  subscribers: mongoose.Types.ObjectId[]
 
-  @Prop({ require: true })
-  subscribedTo: IdObject[]
+  @Prop({ required: true })
+  subscribedTo: mongoose.Types.ObjectId[]
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
