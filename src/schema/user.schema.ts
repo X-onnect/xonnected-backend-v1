@@ -22,10 +22,10 @@ export class User {
   createdAt: string;
 
   @Prop({ required: true })
-  subscribers: mongoose.Types.ObjectId[]
+  subscribers: string[]
 
   @Prop({ required: true })
-  subscribedTo: mongoose.Types.ObjectId[]
+  subscribedTo: string[]
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

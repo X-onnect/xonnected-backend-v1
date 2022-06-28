@@ -18,6 +18,7 @@ const exceptions_1 = require("../utils/exceptions");
 const mongoose_1 = require("mongoose");
 const mongoose_2 = require("@nestjs/mongoose");
 const user_schema_1 = require("../schema/user.schema");
+const objectsHaveTheSameKeys_1 = require("../utils/objectsHaveTheSameKeys");
 let UsersService = class UsersService {
     constructor(userModel) {
         this.userModel = userModel;
@@ -32,15 +33,7 @@ let UsersService = class UsersService {
         return this.userModel.find({}, "-password").exec();
     }
     async createUser(user) {
-        let isUserObjectComplete = true;
-        Object.keys(user_schema_1.userDTO).every(key => {
-            if (user[key])
-                return true;
-            else {
-                isUserObjectComplete = false;
-                return false;
-            }
-        });
+        const isUserObjectComplete = (0, objectsHaveTheSameKeys_1.objectsHaveTheSameKeys)(user_schema_1.userDTO, user);
         if (!isUserObjectComplete) {
             throw new exceptions_1.Exceptions.IncompleteRequestException();
         }
@@ -57,7 +50,7 @@ let UsersService = class UsersService {
     async update(id, username, email, password) {
         return this.userModel.findByIdAndUpdate(id, { username, email, password });
     }
-    async delete(id) {
+    async deleteUser(id) {
         return this.userModel.deleteOne({ _id: id });
     }
 };

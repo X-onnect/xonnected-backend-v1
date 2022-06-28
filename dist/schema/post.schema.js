@@ -9,42 +9,59 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userDTO = exports.UserSchema = exports.User = void 0;
+exports.editPostDTO = exports.postDTO = exports.PostSchema = exports.Post = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
-let User = class User {
+const mongoose = require("mongoose");
+let Post = class Post {
 };
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
-], User.prototype, "email", void 0);
+], Post.prototype, "text", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ required: false }),
     __metadata("design:type", String)
-], User.prototype, "username", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], User.prototype, "password", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], User.prototype, "createdAt", void 0);
+], Post.prototype, "image", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Array)
-], User.prototype, "subscribers", void 0);
+], Post.prototype, "likes", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], Post.prototype, "createdAt", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", mongoose.Types.ObjectId)
+], Post.prototype, "createdBy", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Array)
-], User.prototype, "subscribedTo", void 0);
-User = __decorate([
+], Post.prototype, "comments", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", Boolean)
+], Post.prototype, "isFree", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", Number)
+], Post.prototype, "price", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", Array)
+], Post.prototype, "subscribers", void 0);
+Post = __decorate([
     (0, mongoose_1.Schema)()
-], User);
-exports.User = User;
-exports.UserSchema = mongoose_1.SchemaFactory.createForClass(User);
-exports.userDTO = {
-    email: " ",
-    username: " ",
-    password: " ",
+], Post);
+exports.Post = Post;
+exports.PostSchema = mongoose_1.SchemaFactory.createForClass(Post);
+exports.postDTO = {
+    text: " ",
+    image: '',
+    isFree: true,
+    price: 0,
 };
-//# sourceMappingURL=user.schema.js.map
+exports.editPostDTO = {
+    text: "",
+};
+//# sourceMappingURL=post.schema.js.map

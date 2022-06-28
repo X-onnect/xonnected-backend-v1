@@ -29,7 +29,7 @@ let UsersController = class UsersController {
     }
     async deleteUser(body) {
         const { _id } = body;
-        const response = await this.usersService.delete(_id);
+        const response = await this.usersService.deleteUser(_id);
         if (response.acknowledged && response.deletedCount > 0) {
             return { message: 'Success' };
         }

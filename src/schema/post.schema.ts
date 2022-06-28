@@ -32,14 +32,18 @@ export class Post {
   price: number;
 
   @Prop({ required: true })
-  subscribers: mongoose.Types.ObjectId[];
+  subscribers: string[];
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
 
-export const PostDTO = {
+export const postDTO = {
     text: " ",
     image: '',
     isFree: true,
     price: 0,
+}
+
+export const editPostDTO = {
+    text: "",
 }
