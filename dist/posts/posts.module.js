@@ -6,29 +6,26 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersModule = void 0;
+exports.PostsModule = void 0;
 const common_1 = require("@nestjs/common");
-const users_service_1 = require("./users.service");
-const passport_1 = require("@nestjs/passport");
-const users_controller_1 = require("./users.controller");
+const posts_service_1 = require("./posts.service");
+const posts_controller_1 = require("./posts.controller");
+const post_schema_1 = require("../schema/post.schema");
 const user_schema_1 = require("../schema/user.schema");
 const mongoose_1 = require("@nestjs/mongoose");
-let UsersModule = class UsersModule {
+let PostsModule = class PostsModule {
 };
-UsersModule = __decorate([
+PostsModule = __decorate([
     (0, common_1.Module)({
-        providers: [
-            users_service_1.UsersService,
-        ],
+        providers: [posts_service_1.PostsService],
+        controllers: [posts_controller_1.PostsController],
         imports: [
-            passport_1.PassportModule,
             mongoose_1.MongooseModule.forFeature([
+                { name: post_schema_1.Post.name, schema: post_schema_1.PostSchema },
                 { name: user_schema_1.User.name, schema: user_schema_1.UserSchema },
             ])
         ],
-        exports: [users_service_1.UsersService],
-        controllers: [users_controller_1.UsersController]
     })
-], UsersModule);
-exports.UsersModule = UsersModule;
-//# sourceMappingURL=users.module.js.map
+], PostsModule);
+exports.PostsModule = PostsModule;
+//# sourceMappingURL=posts.module.js.map

@@ -8,5 +8,5 @@ export declare class UsersService {
     findAll(): Promise<User[]>;
     createUser(user: typeof userDTO): Promise<UserDocument>;
     update(id: string, username: string, email: string, password: string): Promise<UserDocument>;
-    delete(id: string): Promise<import("mongodb").DeleteResult>;
+    deleteUser(id: string): Promise<import("mongodb").DeleteResult>;
 }

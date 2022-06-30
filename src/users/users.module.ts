@@ -9,7 +9,12 @@ import { MongooseModule } from '@nestjs/mongoose';
   providers: [
     UsersService, 
   ],
-  imports: [PassportModule, MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])],
+  imports: [
+    PassportModule, 
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+    ])
+  ],
   exports: [UsersService],
   controllers: [UsersController]
 })

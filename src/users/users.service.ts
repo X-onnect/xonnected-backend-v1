@@ -3,6 +3,7 @@ import { Exceptions } from 'src/utils/exceptions';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import  { User, UserDocument, userDTO } from '../schema/user.schema'; 
+import { objectsHaveTheSameKeys } from 'src/utils/objectsHaveTheSameKeys';
 
 @Injectable()
 export class UsersService {
@@ -21,15 +22,7 @@ export class UsersService {
     }
 
     async createUser(user: typeof userDTO): Promise<UserDocument> {
-        let isUserObjectComplete = true;
-
-        Object.keys(userDTO).every(key => {
-            if (user[key]) return true
-            else {
-                isUserObjectComplete = false;
-                return false;
-            }
-        });
+        const isUserObjectComplete = objectsHaveTheSameKeys(userDTO, user);
 
         if (!isUserObjectComplete) {
             throw new Exceptions.IncompleteRequestException();
@@ -57,7 +50,7 @@ export class UsersService {
         return this.userModel.findByIdAndUpdate(id, { username, email, password })
     }
 
-    async delete(id: string) {
+    async deleteUser(id: string) {
         return this.userModel.deleteOne({ _id: id });
     }
 }

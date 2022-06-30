@@ -1,15 +1,15 @@
 import * as mongoose from 'mongoose';
 export declare type UserDocument = User & mongoose.Document;
-interface IdObject {
-    _id: string;
+export interface IdObject {
+    _id: mongoose.Types.ObjectId;
 }
 export declare class User {
     email: string;
     username: string;
     password: string;
     createdAt: string;
-    subscribers: IdObject[];
-    subscribedTo: IdObject[];
+    subscribers: string[];
+    subscribedTo: string[];
 }
 export declare const UserSchema: mongoose.Schema<User, mongoose.Model<User, any, any, any, any>, {}, {}, any, {}, "type", User>;
 export declare const userDTO: {
@@ -17,4 +17,3 @@ export declare const userDTO: {
     username: string;
     password: string;
 };
-export {};
