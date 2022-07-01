@@ -11,12 +11,24 @@ const common_1 = require("@nestjs/common");
 const wallet_2_service_1 = require("./wallet-2.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const wallet_2_schema_1 = require("../schema/wallet-2.schema");
+const wallet_2_gateway_1 = require("./wallet-2.gateway");
+const users_module_1 = require("../users/users.module");
+const jwt_strategy_1 = require("../auth/jwt.strategy");
+const jwt_1 = require("@nestjs/jwt");
+const constants_1 = require("../auth/constants");
 let Wallet2Module = class Wallet2Module {
 };
 Wallet2Module = __decorate([
     (0, common_1.Module)({
-        providers: [wallet_2_service_1.Wallet2Service],
-        imports: [mongoose_1.MongooseModule.forFeature([{ name: wallet_2_schema_1.Wallet2.name, schema: wallet_2_schema_1.Wallet2Schema }])],
+        providers: [wallet_2_service_1.Wallet2Service, wallet_2_gateway_1.Wallet2Gateway, jwt_strategy_1.JwtStrategy],
+        imports: [
+            mongoose_1.MongooseModule.forFeature([{ name: wallet_2_schema_1.Wallet2.name, schema: wallet_2_schema_1.Wallet2Schema }]),
+            users_module_1.UsersModule,
+            jwt_1.JwtModule.register({
+                secret: constants_1.jwtConstants.secret,
+                signOptions: { expiresIn: '86400s' }
+            })
+        ],
         exports: [wallet_2_service_1.Wallet2Service]
     })
 ], Wallet2Module);

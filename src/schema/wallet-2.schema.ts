@@ -5,11 +5,11 @@ export type Wallet2Document = Wallet2 & mongoose.Document;
 
 @Schema()
 export class Wallet2 {
-  @Prop({ required: true })
+  @Prop({ required: false })
   address: string
 
-  @Prop({ required: true })
-  secret: string
+  @Prop({ required: false })
+  token: string
 
   @Prop({ required: true })
   createdAt: string;

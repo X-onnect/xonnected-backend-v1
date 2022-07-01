@@ -14,13 +14,13 @@ const mongoose_1 = require("@nestjs/mongoose");
 let Wallet2 = class Wallet2 {
 };
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ required: false }),
     __metadata("design:type", String)
 ], Wallet2.prototype, "address", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)({ required: false }),
     __metadata("design:type", String)
-], Wallet2.prototype, "secret", void 0);
+], Wallet2.prototype, "token", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
