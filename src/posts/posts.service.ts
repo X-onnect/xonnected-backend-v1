@@ -36,7 +36,8 @@ export class PostsService {
             createdAt: new Date().toISOString(),
             comments: [],
             createdBy: _id,
-            subscribers,
+            subscribers: [],
+            subscribersFromCreator: subscribers,
         });
 
         return await createdPost.save();
@@ -112,7 +113,12 @@ export class PostsService {
         const posts = await this.postModel.find({}).exec();
 
         const updatedPosts = posts.reverse().map((post) => {
-        const canBeViewed = !post.isFree && !post.subscribers.includes(userId.toString()) && (post.createdBy.toString() !== userId.toString()) ? 
+        const canBeViewed = 
+            !post.isFree &&         // post is not free
+            !post.subscribers.includes(userId.toString()) &&   // user is not subscribed to post
+            !post.subscribersFromCreator.includes(userId.toString()) && // user is not subscribed to owner of post
+            (post.createdBy.toString() !== userId.toString())   // user is not creator of post
+        ? 
             false : 
             true;
 
@@ -120,5 +126,41 @@ export class PostsService {
         })
 
         return updatedPosts;
+    }
+
+    async subscribeToPost(userId: string, postId: string) {
+        const post = await this.postModel.findById(postId).exec();
+
+        if (post) {
+            const subscribers = post.subscribers;
+
+            if (subscribers.indexOf(userId) === -1) {
+                return await this.postModel.findByIdAndUpdate(postId, { subscribers }).exec();
+            }
+            else {
+                return post;
+            }
+        }
+        else {
+            throw new Exceptions.RecordNotFoundException();
+        }
+    }
+
+    async subscribeToUser(userId: string, subscribee: string) {
+        const user = await this.userModel.findById(subscribee).exec();
+
+        if (!user) {
+            throw new Exceptions.RecordNotFoundException();
+        }
+
+        const subscribers = user.subscribers;
+
+        if (subscribers.indexOf(userId) === -1) {
+            await this.userModel.findByIdAndUpdate(subscribee, { subscribers }).exec();
+        }
+
+        await this.postModel.updateMany({ createdBy: subscribee }, { subscribersFromCreator: subscribers });
+
+        return { statusCode: 200, message: 'success' };
     }
 }

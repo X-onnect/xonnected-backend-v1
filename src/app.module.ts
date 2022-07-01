@@ -9,9 +9,10 @@ import { WalletModule } from './wallet/wallet.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { env } from 'src/utils/env';
 import { PostsModule } from './posts/posts.module';
+import { Wallet2Module } from './wallet-2/wallet-2.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, WalletModule, MongooseModule.forRoot(env.MONGODB_URI), PostsModule],
+  imports: [AuthModule, UsersModule, WalletModule, MongooseModule.forRoot(env.MONGODB_URI), PostsModule, Wallet2Module],
   controllers: [AppController],
   providers: [
     AppService,

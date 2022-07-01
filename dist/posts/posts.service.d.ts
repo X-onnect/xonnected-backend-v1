@@ -20,4 +20,11 @@ export declare class PostsService {
         };
         canBeViewed: boolean;
     }[]>;
+    subscribeToPost(userId: string, postId: string): Promise<Post & import("mongoose").Document<any, any, any> & {
+        _id: Types.ObjectId;
+    }>;
+    subscribeToUser(userId: string, subscribee: string): Promise<{
+        statusCode: number;
+        message: string;
+    }>;
 }

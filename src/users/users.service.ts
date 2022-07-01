@@ -3,11 +3,15 @@ import { Exceptions } from 'src/utils/exceptions';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import  { User, UserDocument, userDTO } from '../schema/user.schema'; 
+import { Wallet2, Wallet2Document } from 'src/schema/wallet-2.schema';
 import { objectsHaveTheSameKeys } from 'src/utils/objectsHaveTheSameKeys';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+    constructor(
+        @InjectModel(User.name) private userModel: Model<UserDocument>,
+        @InjectModel(Wallet2.name) private wallet2Model: Model<Wallet2Document>,
+    ) {}
 
     async findOne(email: string): Promise<User | undefined> {
         return this.userModel.findOne({ email }).exec()
@@ -43,7 +47,20 @@ export class UsersService {
             createdAt: new Date().toISOString(),
         });
 
-        return await createdUser.save();
+        const savedCreatedUser = await createdUser.save()
+
+        if (savedCreatedUser) {
+            const createdWallet = new this.wallet2Model({
+                _id: savedCreatedUser._id,
+                address: '',
+                token: '',
+                createdAt: savedCreatedUser.createdAt,
+            });
+
+            await createdWallet.save();
+        }
+
+        return savedCreatedUser;
     }
 
     async update(id: string, username: string, email: string, password: string): Promise<UserDocument> {

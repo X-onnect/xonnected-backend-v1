@@ -43,6 +43,16 @@ let PostsController = class PostsController {
         const { _id } = req.user;
         return await this.postsService.getAllPosts(_id);
     }
+    async subscribeToPost(req, param) {
+        const { id } = param;
+        const userId = req.user._id;
+        return await this.postsService.subscribeToPost(userId, id);
+    }
+    async subscribeToUser(req, param) {
+        const { id } = param;
+        const userId = req.user._id;
+        return await this.postsService.subscribeToUser(userId, id);
+    }
 };
 __decorate([
     (0, common_1.Post)(),
@@ -84,6 +94,22 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "getAllPosts", null);
+__decorate([
+    (0, common_1.Get)('subscribe-to-post/:id'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Param)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "subscribeToPost", null);
+__decorate([
+    (0, common_1.Get)('subscribe-to-user/:id'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Param)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "subscribeToUser", null);
 PostsController = __decorate([
     (0, common_1.Controller)('post'),
     __metadata("design:paramtypes", [posts_service_1.PostsService])

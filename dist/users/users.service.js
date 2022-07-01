@@ -18,10 +18,12 @@ const exceptions_1 = require("../utils/exceptions");
 const mongoose_1 = require("mongoose");
 const mongoose_2 = require("@nestjs/mongoose");
 const user_schema_1 = require("../schema/user.schema");
+const wallet_2_schema_1 = require("../schema/wallet-2.schema");
 const objectsHaveTheSameKeys_1 = require("../utils/objectsHaveTheSameKeys");
 let UsersService = class UsersService {
-    constructor(userModel) {
+    constructor(userModel, wallet2Model) {
         this.userModel = userModel;
+        this.wallet2Model = wallet2Model;
     }
     async findOne(email) {
         return this.userModel.findOne({ email }).exec();
@@ -45,7 +47,17 @@ let UsersService = class UsersService {
             throw new exceptions_1.Exceptions.EmailExistsException();
         }
         const createdUser = new this.userModel(Object.assign(Object.assign({}, user), { createdAt: new Date().toISOString() }));
-        return await createdUser.save();
+        const savedCreatedUser = await createdUser.save();
+        if (savedCreatedUser) {
+            const createdWallet = new this.wallet2Model({
+                _id: savedCreatedUser._id,
+                address: '',
+                token: '',
+                createdAt: savedCreatedUser.createdAt,
+            });
+            await createdWallet.save();
+        }
+        return savedCreatedUser;
     }
     async update(id, username, email, password) {
         return this.userModel.findByIdAndUpdate(id, { username, email, password });
@@ -57,7 +69,9 @@ let UsersService = class UsersService {
 UsersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_2.InjectModel)(user_schema_1.User.name)),
-    __metadata("design:paramtypes", [mongoose_1.Model])
+    __param(1, (0, mongoose_2.InjectModel)(wallet_2_schema_1.Wallet2.name)),
+    __metadata("design:paramtypes", [mongoose_1.Model,
+        mongoose_1.Model])
 ], UsersService);
 exports.UsersService = UsersService;
 //# sourceMappingURL=users.service.js.map
