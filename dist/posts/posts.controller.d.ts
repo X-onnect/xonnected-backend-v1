@@ -20,4 +20,11 @@ export declare class PostsController {
         };
         canBeViewed: boolean;
     }[]>;
+    subscribeToPost(req: any, param: any): Promise<import("../schema/post.schema").Post & import("mongoose").Document<any, any, any> & {
+        _id: import("mongoose").Types.ObjectId;
+    }>;
+    subscribeToUser(req: any, param: any): Promise<{
+        statusCode: number;
+        message: string;
+    }>;
 }

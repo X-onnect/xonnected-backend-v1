@@ -45,9 +45,10 @@ let Wallet2Gateway = class Wallet2Gateway {
         }
         catch (e) { }
         const validation = await this.walletService.validateConnection(authHeader);
-        const { receiverId, amount } = message;
-        console.log(validation);
+        const { receiverId, amount } = parsedMessage;
+        console.log(receiverId, amount);
         if (validation.isValid && amount && !isNaN(parseFloat(amount)) && receiverId) {
+            console.log('something');
             await this.walletService.requestTransfer(client, validation._id, receiverId, parseFloat(amount));
         }
         else {

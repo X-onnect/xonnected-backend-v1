@@ -37,7 +37,7 @@ let PostsService = class PostsService {
                 subscribers.push(...postMaker.subscribers);
             }
         }
-        const createdPost = new this.postModel(Object.assign(Object.assign({}, post), { likes: [], createdAt: new Date().toISOString(), comments: [], createdBy: _id, subscribers }));
+        const createdPost = new this.postModel(Object.assign(Object.assign({}, post), { likes: [], createdAt: new Date().toISOString(), comments: [], createdBy: _id, subscribers: [], subscribersFromCreator: subscribers }));
         return await createdPost.save();
     }
     async deletePost(postId, userId) {
@@ -95,12 +95,43 @@ let PostsService = class PostsService {
     async getAllPosts(userId) {
         const posts = await this.postModel.find({}).exec();
         const updatedPosts = posts.reverse().map((post) => {
-            const canBeViewed = !post.isFree && !post.subscribers.includes(userId.toString()) && (post.createdBy.toString() !== userId.toString()) ?
-                false :
+            const canBeViewed = !post.isFree &&
+                !post.subscribers.includes(userId.toString()) &&
+                !post.subscribersFromCreator.includes(userId.toString()) &&
+                (post.createdBy.toString() !== userId.toString())
+                ?
+                    false :
                 true;
             return { post, canBeViewed };
         });
         return updatedPosts;
+    }
+    async subscribeToPost(userId, postId) {
+        const post = await this.postModel.findById(postId).exec();
+        if (post) {
+            const subscribers = post.subscribers;
+            if (subscribers.indexOf(userId) === -1) {
+                return await this.postModel.findByIdAndUpdate(postId, { subscribers }).exec();
+            }
+            else {
+                return post;
+            }
+        }
+        else {
+            throw new exceptions_1.Exceptions.RecordNotFoundException();
+        }
+    }
+    async subscribeToUser(userId, subscribee) {
+        const user = await this.userModel.findById(subscribee).exec();
+        if (!user) {
+            throw new exceptions_1.Exceptions.RecordNotFoundException();
+        }
+        const subscribers = user.subscribers;
+        if (subscribers.indexOf(userId) === -1) {
+            await this.userModel.findByIdAndUpdate(subscribee, { subscribers }).exec();
+        }
+        await this.postModel.updateMany({ createdBy: subscribee }, { subscribersFromCreator: subscribers });
+        return { statusCode: 200, message: 'success' };
     }
 };
 PostsService = __decorate([

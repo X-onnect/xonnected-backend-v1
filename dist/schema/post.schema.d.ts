@@ -9,6 +9,7 @@ export declare class Post {
     comments: Post[];
     isFree: boolean;
     price: number;
+    subscribersFromCreator: string[];
     subscribers: string[];
 }
 export declare const PostSchema: mongoose.Schema<Post, mongoose.Model<Post, any, any, any, any>, {}, {}, any, {}, "type", Post>;
