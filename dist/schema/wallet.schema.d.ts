@@ -6,8 +6,8 @@ export declare class Wallet {
     createdAt: string;
 }
 export declare const WalletSchema: mongoose.Schema<any, mongoose.Model<any, any, any, any, any>, {}, {}, any, {}, "type", {
-    type?: string;
     balance?: string;
+    type?: string;
     createdAt?: string;
 }>;
 export declare const walletBoilerplate: Wallet;

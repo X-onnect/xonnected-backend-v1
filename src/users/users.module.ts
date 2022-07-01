@@ -4,6 +4,8 @@ import { PassportModule } from '@nestjs/passport';
 import { UsersController } from './users.controller';
 import { UserSchema, User } from 'src/schema/user.schema';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Wallet2Service } from 'src/wallet-2/wallet-2.service';
+import { Wallet2Module } from 'src/wallet-2/wallet-2.module';
 
 @Module({
   providers: [
@@ -11,6 +13,7 @@ import { MongooseModule } from '@nestjs/mongoose';
   ],
   imports: [
     PassportModule, 
+    Wallet2Module,
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
     ])

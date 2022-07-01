@@ -4,10 +4,11 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import  { User, UserDocument, userDTO } from '../schema/user.schema'; 
 import { objectsHaveTheSameKeys } from 'src/utils/objectsHaveTheSameKeys';
+import { Wallet2Service } from 'src/wallet-2/wallet-2.service';
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
+    constructor(@InjectModel(User.name) private userModel: Model<UserDocument>, private walletService: Wallet2Service) {}
 
     async findOne(email: string): Promise<User | undefined> {
         return this.userModel.findOne({ email }).exec()
@@ -18,6 +19,7 @@ export class UsersService {
     }
 
     async findAll(): Promise<User[]> {
+        await this.walletService.connectToWallet();
         return this.userModel.find({}, "-password").exec()
     }
 

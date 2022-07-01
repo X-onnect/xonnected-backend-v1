@@ -18,11 +18,12 @@ const wallet_module_1 = require("./wallet/wallet.module");
 const mongoose_1 = require("@nestjs/mongoose");
 const env_1 = require("./utils/env");
 const posts_module_1 = require("./posts/posts.module");
+const wallet_2_module_1 = require("./wallet-2/wallet-2.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [auth_module_1.AuthModule, users_module_1.UsersModule, wallet_module_1.WalletModule, mongoose_1.MongooseModule.forRoot(env_1.env.MONGODB_URI), posts_module_1.PostsModule],
+        imports: [auth_module_1.AuthModule, users_module_1.UsersModule, wallet_module_1.WalletModule, mongoose_1.MongooseModule.forRoot(env_1.env.MONGODB_URI), posts_module_1.PostsModule, wallet_2_module_1.Wallet2Module],
         controllers: [app_controller_1.AppController],
         providers: [
             app_service_1.AppService,

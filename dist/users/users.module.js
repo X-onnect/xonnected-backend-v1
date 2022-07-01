@@ -13,6 +13,7 @@ const passport_1 = require("@nestjs/passport");
 const users_controller_1 = require("./users.controller");
 const user_schema_1 = require("../schema/user.schema");
 const mongoose_1 = require("@nestjs/mongoose");
+const wallet_2_module_1 = require("../wallet-2/wallet-2.module");
 let UsersModule = class UsersModule {
 };
 UsersModule = __decorate([
@@ -22,6 +23,7 @@ UsersModule = __decorate([
         ],
         imports: [
             passport_1.PassportModule,
+            wallet_2_module_1.Wallet2Module,
             mongoose_1.MongooseModule.forFeature([
                 { name: user_schema_1.User.name, schema: user_schema_1.UserSchema },
             ])

@@ -19,9 +19,11 @@ const mongoose_1 = require("mongoose");
 const mongoose_2 = require("@nestjs/mongoose");
 const user_schema_1 = require("../schema/user.schema");
 const objectsHaveTheSameKeys_1 = require("../utils/objectsHaveTheSameKeys");
+const wallet_2_service_1 = require("../wallet-2/wallet-2.service");
 let UsersService = class UsersService {
-    constructor(userModel) {
+    constructor(userModel, walletService) {
         this.userModel = userModel;
+        this.walletService = walletService;
     }
     async findOne(email) {
         return this.userModel.findOne({ email }).exec();
@@ -30,6 +32,7 @@ let UsersService = class UsersService {
         return this.userModel.findOne({ _id }).exec();
     }
     async findAll() {
+        await this.walletService.connectToWallet();
         return this.userModel.find({}, "-password").exec();
     }
     async createUser(user) {
@@ -57,7 +60,7 @@ let UsersService = class UsersService {
 UsersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_2.InjectModel)(user_schema_1.User.name)),
-    __metadata("design:paramtypes", [mongoose_1.Model])
+    __metadata("design:paramtypes", [mongoose_1.Model, wallet_2_service_1.Wallet2Service])
 ], UsersService);
 exports.UsersService = UsersService;
 //# sourceMappingURL=users.service.js.map
