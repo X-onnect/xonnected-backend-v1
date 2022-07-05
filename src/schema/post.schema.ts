@@ -32,6 +32,9 @@ export class Post {
   price: number;
 
   @Prop({ required: true })
+  subscribersFromCreator: string[];
+
+  @Prop({ required: true })
   subscribers: string[];
 }
 

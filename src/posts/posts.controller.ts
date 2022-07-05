@@ -41,4 +41,20 @@ export class PostsController {
 
         return await this.postsService.getAllPosts(_id);
     }
+
+    @Get('subscribe-to-post/:id')
+    async subscribeToPost(@Request() req, @Param() param) {
+        const { id } = param;
+        const userId = req.user._id;
+
+        return await this.postsService.subscribeToPost(userId, id);
+    }
+
+    @Get('subscribe-to-user/:id')
+    async subscribeToUser(@Request() req, @Param() param) {
+        const { id } = param;
+        const userId = req.user._id;
+
+        return await this.postsService.subscribeToUser(userId, id);
+    }
 }
