@@ -1,4 +1,4 @@
-import { Controller, Get, Put, Body, Delete, Request } from '@nestjs/common';
+import { Controller, Get, Put, Body, Delete, Request, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
 import {
     ApiBearerAuth,
@@ -6,6 +6,7 @@ import {
     ApiResponse,
     ApiTags,
     ApiBody,
+    ApiParam,
   } from '@nestjs/swagger';
 import { UserDto } from 'src/dto/response/user.dto';
 import { SignUpDto } from 'src/dto/sign-up.dto';
@@ -16,6 +17,21 @@ import { DeleteUserResponseDto } from 'src/dto/response/delete-user-response.dto
 @Controller('user')
 export class UsersController {
     constructor(private usersService: UsersService) {}
+
+    @ApiBearerAuth("Bearer")
+    @ApiOperation({ summary: 'Gets data of user matching given id.' })
+    @ApiResponse({ 
+        status: 200,
+        description: 'success',
+        type: UserDto
+    })
+    @ApiParam({ description: 'id of the post to be retrieved.', name: 'id' })
+    @Get(":id")
+    async getUser(@Param() params) {
+        const { id } = params;
+
+        return await this.usersService.findUserById(id);
+    }
 
     @ApiBearerAuth("Bearer")
     @ApiOperation({ summary: 'Gets data of all users.' })
