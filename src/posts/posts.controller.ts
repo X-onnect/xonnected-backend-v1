@@ -134,4 +134,36 @@ export class PostsController {
 
         return await this.postsService.subscribeToUser(userId, id);
     }
+
+    @ApiBearerAuth("Bearer")
+    @ApiOperation({ summary: `Like post with given id.` })
+    @ApiResponse({
+        status: 200,
+        description: 'Post liked successfully.',
+        type: PostDto,
+    })
+    @ApiParam({ description: 'id of the post to like.', name: 'id' })
+    @Get('like/:id')
+    async likePost(@Request() request, @Param() param) {
+        const { id } = param;
+        const userId = request.user?._id;
+
+        return await this.postsService.likePost(id, userId);
+    }
+
+    @ApiBearerAuth("Bearer")
+    @ApiOperation({ summary: `Unlike post with given id.` })
+    @ApiResponse({
+        status: 200,
+        description: 'Post unliked successfully.',
+        type: PostDto,
+    })
+    @ApiParam({ description: 'id of the post to unlike.', name: 'id' })
+    @Get('dislike/:id')
+    async dislikePost(@Request() request, @Param() param) {
+        const { id } = param;
+        const userId = request.user?._id;
+
+        return await this.postsService.unlikePost(id, userId);
+    }
 }

@@ -26,4 +26,6 @@ export declare class PostsService {
     subscribeToUser(userId: string, subscribee: string): Promise<{
         message: string;
     }>;
+    likePost(postId: string, userId: string): Promise<PostDocument>;
+    unlikePost(postId: string, userId: Types.ObjectId): Promise<PostDocument>;
 }

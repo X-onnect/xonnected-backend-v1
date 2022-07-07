@@ -28,4 +28,6 @@ export declare class PostsController {
     subscribeToUser(req: any, param: any): Promise<{
         message: string;
     }>;
+    likePost(request: any, param: any): Promise<import("../schema/post.schema").PostDocument>;
+    dislikePost(request: any, param: any): Promise<import("../schema/post.schema").PostDocument>;
 }

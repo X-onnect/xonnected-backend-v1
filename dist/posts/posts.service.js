@@ -135,6 +135,46 @@ let PostsService = class PostsService {
         await this.postModel.updateMany({ createdBy: subscribee }, { subscribersFromCreator: subscribers });
         return { message: 'Success' };
     }
+    async likePost(postId, userId) {
+        let post;
+        try {
+            post = await this.postModel.findById(postId).exec();
+        }
+        catch (e) {
+            throw new exceptions_1.Exceptions.RecordNotFoundException();
+        }
+        if (!post) {
+            throw new exceptions_1.Exceptions.RecordNotFoundException();
+        }
+        if (post.likes.indexOf(new mongoose_1.Types.ObjectId(userId)) === -1) {
+            await this.postModel.findByIdAndUpdate(postId, { likes: [...post.likes, userId] });
+            return await this.postModel.findById(postId).exec();
+        }
+        return post;
+    }
+    async unlikePost(postId, userId) {
+        let post;
+        try {
+            post = await this.postModel.findById(postId).exec();
+        }
+        catch (e) {
+            throw new exceptions_1.Exceptions.RecordNotFoundException();
+        }
+        if (!post) {
+            throw new exceptions_1.Exceptions.RecordNotFoundException();
+        }
+        if (post.likes.indexOf(new mongoose_1.Types.ObjectId(userId)) !== -1) {
+            const updatedLikes = post.likes.filter((like) => {
+                if (like.equals(userId))
+                    return false;
+                else
+                    return true;
+            });
+            await this.postModel.findByIdAndUpdate(postId, { likes: updatedLikes });
+            return await this.postModel.findById(postId).exec();
+        }
+        return post;
+    }
 };
 PostsService = __decorate([
     (0, common_1.Injectable)(),

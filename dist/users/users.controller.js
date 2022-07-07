@@ -24,6 +24,10 @@ let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
     }
+    async getUser(params) {
+        const { id } = params;
+        return await this.usersService.findUserById(id);
+    }
     async getAll() {
         return await this.usersService.findAll();
     }
@@ -43,6 +47,21 @@ let UsersController = class UsersController {
         }
     }
 };
+__decorate([
+    (0, swagger_1.ApiBearerAuth)("Bearer"),
+    (0, swagger_1.ApiOperation)({ summary: 'Gets data of user matching given id.' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'success',
+        type: user_dto_1.UserDto
+    }),
+    (0, swagger_1.ApiParam)({ description: 'id of the post to be retrieved.', name: 'id' }),
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getUser", null);
 __decorate([
     (0, swagger_1.ApiBearerAuth)("Bearer"),
     (0, swagger_1.ApiOperation)({ summary: 'Gets data of all users.' }),

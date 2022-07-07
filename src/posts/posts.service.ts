@@ -167,4 +167,53 @@ export class PostsService {
 
         return { message: 'Success' };
     }
+
+    async likePost(postId: string, userId: string) {
+        let post: PostDocument;
+
+        try {
+            post = await this.postModel.findById(postId).exec();
+        } catch(e) {
+            throw new Exceptions.RecordNotFoundException();
+        }
+
+        if (!post) {
+            throw new Exceptions.RecordNotFoundException();
+        }
+
+        if (post.likes.indexOf(new Types.ObjectId(userId)) === -1) {
+            await this.postModel.findByIdAndUpdate(postId, { likes: [...post.likes, userId] });
+
+            return await this.postModel.findById(postId).exec();
+        }
+
+        return post;
+    }
+
+    async unlikePost(postId: string, userId: Types.ObjectId) {
+        let post: PostDocument;
+
+        try {
+            post = await this.postModel.findById(postId).exec();
+        } catch(e) {
+            throw new Exceptions.RecordNotFoundException();
+        }
+
+        if (!post) {
+            throw new Exceptions.RecordNotFoundException();
+        }
+
+        if (post.likes.indexOf(new Types.ObjectId(userId)) !== -1) {
+            const updatedLikes = post.likes.filter((like) => {
+                if (like.equals(userId)) return false;
+                else return true;
+            });
+
+            await this.postModel.findByIdAndUpdate(postId, { likes: updatedLikes });
+
+            return await this.postModel.findById(postId).exec();
+        }
+
+        return post;
+    }
 }

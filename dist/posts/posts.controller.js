@@ -64,6 +64,18 @@ let PostsController = class PostsController {
         const userId = req.user._id;
         return await this.postsService.subscribeToUser(userId, id);
     }
+    async likePost(request, param) {
+        var _a;
+        const { id } = param;
+        const userId = (_a = request.user) === null || _a === void 0 ? void 0 : _a._id;
+        return await this.postsService.likePost(id, userId);
+    }
+    async dislikePost(request, param) {
+        var _a;
+        const { id } = param;
+        const userId = (_a = request.user) === null || _a === void 0 ? void 0 : _a._id;
+        return await this.postsService.unlikePost(id, userId);
+    }
 };
 __decorate([
     (0, swagger_1.ApiBearerAuth)("Bearer"),
@@ -178,6 +190,38 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "subscribeToUser", null);
+__decorate([
+    (0, swagger_1.ApiBearerAuth)("Bearer"),
+    (0, swagger_1.ApiOperation)({ summary: `Like post with given id.` }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Post liked successfully.',
+        type: post_dto_1.PostDto,
+    }),
+    (0, swagger_1.ApiParam)({ description: 'id of the post to like.', name: 'id' }),
+    (0, common_1.Get)('like/:id'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Param)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "likePost", null);
+__decorate([
+    (0, swagger_1.ApiBearerAuth)("Bearer"),
+    (0, swagger_1.ApiOperation)({ summary: `Unlike post with given id.` }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Post unliked successfully.',
+        type: post_dto_1.PostDto,
+    }),
+    (0, swagger_1.ApiParam)({ description: 'id of the post to unlike.', name: 'id' }),
+    (0, common_1.Get)('dislike/:id'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Param)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "dislikePost", null);
 PostsController = __decorate([
     (0, swagger_1.ApiTags)("Post Management"),
     (0, common_1.Controller)('post'),
