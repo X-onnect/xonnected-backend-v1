@@ -24,7 +24,6 @@ export declare class PostsService {
         _id: Types.ObjectId;
     }>;
     subscribeToUser(userId: string, subscribee: string): Promise<{
-        statusCode: number;
         message: string;
     }>;
 }

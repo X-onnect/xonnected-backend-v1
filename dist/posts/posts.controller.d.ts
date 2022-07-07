@@ -3,7 +3,9 @@ export declare class PostsController {
     private postsService;
     constructor(postsService: PostsService);
     createPost(req: any, body: any): Promise<import("../schema/post.schema").PostDocument>;
-    deletePost(req: any, param: any): Promise<import("mongodb").DeleteResult>;
+    deletePost(req: any, param: any): Promise<{
+        message: string;
+    }>;
     updatePost(body: any, param: any, req: any): Promise<{
         message: string;
         data: import("../schema/post.schema").Post & import("mongoose").Document<any, any, any> & {
@@ -24,7 +26,6 @@ export declare class PostsController {
         _id: import("mongoose").Types.ObjectId;
     }>;
     subscribeToUser(req: any, param: any): Promise<{
-        statusCode: number;
         message: string;
     }>;
 }

@@ -74,7 +74,8 @@ let PostsService = class PostsService {
             throw new common_1.UnauthorizedException();
         }
         const { text } = post;
-        return await this.postModel.findByIdAndUpdate(postId, { text });
+        await this.postModel.findByIdAndUpdate(postId, { text });
+        return await this.postModel.findById(postId);
     }
     async getPostById(postId, userId) {
         let post;
@@ -111,7 +112,8 @@ let PostsService = class PostsService {
         if (post) {
             const subscribers = post.subscribers;
             if (subscribers.indexOf(userId) === -1) {
-                return await this.postModel.findByIdAndUpdate(postId, { subscribers }).exec();
+                await this.postModel.findByIdAndUpdate(postId, { subscribers }).exec();
+                return await this.postModel.findById(postId);
             }
             else {
                 return post;
@@ -131,7 +133,7 @@ let PostsService = class PostsService {
             await this.userModel.findByIdAndUpdate(subscribee, { subscribers }).exec();
         }
         await this.postModel.updateMany({ createdBy: subscribee }, { subscribersFromCreator: subscribers });
-        return { statusCode: 200, message: 'success' };
+        return { message: 'Success' };
     }
 };
 PostsService = __decorate([

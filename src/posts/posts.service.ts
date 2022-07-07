@@ -4,7 +4,7 @@ import { Exceptions } from 'src/utils/exceptions';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post, PostDocument, postDTO, editPostDTO } from 'src/schema/post.schema';
-import  { User, UserDocument } from '../schema/user.schema'; 
+import { User, UserDocument } from '../schema/user.schema'; 
 
 @Injectable()
 export class PostsService {
@@ -86,7 +86,9 @@ export class PostsService {
         
         const { text } = post;
         
-        return await this.postModel.findByIdAndUpdate(postId, { text })
+        await this.postModel.findByIdAndUpdate(postId, { text })
+
+        return await this.postModel.findById(postId)
     }
 
     async getPostById(postId: Types.ObjectId, userId: Types.ObjectId) {
@@ -135,7 +137,9 @@ export class PostsService {
             const subscribers = post.subscribers;
 
             if (subscribers.indexOf(userId) === -1) {
-                return await this.postModel.findByIdAndUpdate(postId, { subscribers }).exec();
+                await this.postModel.findByIdAndUpdate(postId, { subscribers }).exec();
+
+                return await this.postModel.findById(postId);
             }
             else {
                 return post;
@@ -161,6 +165,6 @@ export class PostsService {
 
         await this.postModel.updateMany({ createdBy: subscribee }, { subscribersFromCreator: subscribers });
 
-        return { statusCode: 200, message: 'success' };
+        return { message: 'Success' };
     }
 }

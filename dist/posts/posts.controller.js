@@ -15,18 +15,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsController = void 0;
 const common_1 = require("@nestjs/common");
 const posts_service_1 = require("./posts.service");
+const swagger_1 = require("@nestjs/swagger");
+const create_post_dto_1 = require("../dto/create-post.dto");
+const post_dto_1 = require("../dto/response/post.dto");
+const delete_user_response_dto_1 = require("../dto/response/delete-user-response.dto");
+const edit_post_dto_1 = require("../dto/edit-post.dto");
 let PostsController = class PostsController {
     constructor(postsService) {
         this.postsService = postsService;
     }
     async createPost(req, body) {
         const { _id } = req.user;
-        return this.postsService.createPost(body, _id);
+        return await this.postsService.createPost(body, _id);
     }
     async deletePost(req, param) {
         const { id } = param;
         const userId = req.user._id;
-        return await this.postsService.deletePost(id, userId);
+        const response = await this.postsService.deletePost(id, userId);
+        if (response.acknowledged && response.deletedCount > 0) {
+            return { message: 'Success' };
+        }
+        else {
+            return { message: 'No match found' };
+        }
     }
     async updatePost(body, param, req) {
         const { id } = param;
@@ -55,6 +66,14 @@ let PostsController = class PostsController {
     }
 };
 __decorate([
+    (0, swagger_1.ApiBearerAuth)("Bearer"),
+    (0, swagger_1.ApiOperation)({ summary: 'Creates a new post for a user' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Post created successfully',
+        type: post_dto_1.PostDto,
+    }),
+    (0, swagger_1.ApiBody)({ type: create_post_dto_1.CreatePostDto }),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Body)()),
@@ -63,6 +82,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "createPost", null);
 __decorate([
+    (0, swagger_1.ApiBearerAuth)("Bearer"),
+    (0, swagger_1.ApiOperation)({ summary: `Deletes a user's post` }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Post deleted successfully',
+        type: delete_user_response_dto_1.DeleteUserResponseDto,
+    }),
+    (0, swagger_1.ApiParam)({ description: 'id of the post to be deleted', name: 'id' }),
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Param)()),
@@ -71,6 +98,15 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "deletePost", null);
 __decorate([
+    (0, swagger_1.ApiBearerAuth)("Bearer"),
+    (0, swagger_1.ApiOperation)({ summary: `Updates a user's post matching the given id.` }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Post updated successfully',
+        type: post_dto_1.PostDto,
+    }),
+    (0, swagger_1.ApiParam)({ description: 'id of the post to be updated.', name: 'id' }),
+    (0, swagger_1.ApiBody)({ type: edit_post_dto_1.EditPostDto }),
     (0, common_1.Put)(':id'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Param)()),
@@ -80,6 +116,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "updatePost", null);
 __decorate([
+    (0, swagger_1.ApiBearerAuth)("Bearer"),
+    (0, swagger_1.ApiOperation)({ summary: `Gets a post matching the given id.` }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Post retrieved.',
+        type: post_dto_1.PostDto,
+    }),
+    (0, swagger_1.ApiParam)({ description: 'id of the post to be retrieved.', name: 'id' }),
     (0, common_1.Get)('id/:id'),
     __param(0, (0, common_1.Param)()),
     __param(1, (0, common_1.Request)()),
@@ -88,6 +132,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "getPost", null);
 __decorate([
+    (0, swagger_1.ApiBearerAuth)("Bearer"),
+    (0, swagger_1.ApiOperation)({ summary: `Gets all posts.` }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        isArray: true,
+        description: 'All posts retrieved.',
+        type: post_dto_1.PostDto,
+    }),
     (0, common_1.Get)('all'),
     __param(0, (0, common_1.Request)()),
     __metadata("design:type", Function),
@@ -95,6 +147,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "getAllPosts", null);
 __decorate([
+    (0, swagger_1.ApiBearerAuth)("Bearer"),
+    (0, swagger_1.ApiOperation)({ summary: `Subscribe to post with given id.` }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Subscription complete.',
+        type: post_dto_1.PostDto,
+    }),
+    (0, swagger_1.ApiParam)({ description: 'id of the post to subscribe to.', name: 'id' }),
     (0, common_1.Get)('subscribe-to-post/:id'),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Param)()),
@@ -103,6 +163,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "subscribeToPost", null);
 __decorate([
+    (0, swagger_1.ApiBearerAuth)("Bearer"),
+    (0, swagger_1.ApiOperation)({ summary: `Subscribe to user with given id.` }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Subscription complete.',
+        type: delete_user_response_dto_1.DeleteUserResponseDto,
+    }),
+    (0, swagger_1.ApiParam)({ description: 'id of the user to subscribe to.', name: 'id' }),
     (0, common_1.Get)('subscribe-to-user/:id'),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Param)()),
@@ -111,6 +179,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "subscribeToUser", null);
 PostsController = __decorate([
+    (0, swagger_1.ApiTags)("Post Management"),
     (0, common_1.Controller)('post'),
     __metadata("design:paramtypes", [posts_service_1.PostsService])
 ], PostsController);
