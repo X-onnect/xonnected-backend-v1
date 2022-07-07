@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const wallet_service_1 = require("./wallet.service");
 const app_global_1 = require("../app.global");
 const wallet_schema_1 = require("../schema/wallet.schema");
+const swagger_1 = require("@nestjs/swagger");
 let WalletController = class WalletController {
     constructor(walletService) {
         this.walletService = walletService;
@@ -45,6 +46,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], WalletController.prototype, "createWallet", null);
 WalletController = __decorate([
+    (0, swagger_1.ApiTags)("Do not use!"),
     (0, common_1.Controller)('wallet'),
     __metadata("design:paramtypes", [wallet_service_1.WalletService])
 ], WalletController);

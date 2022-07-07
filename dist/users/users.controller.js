@@ -15,6 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const users_service_1 = require("./users.service");
+const swagger_1 = require("@nestjs/swagger");
+const user_dto_1 = require("../dto/response/user.dto");
+const sign_up_dto_1 = require("../dto/sign-up.dto");
+const delete_user_dto_1 = require("../dto/delete-user.dto");
+const delete_user_response_dto_1 = require("../dto/response/delete-user-response.dto");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -39,12 +44,28 @@ let UsersController = class UsersController {
     }
 };
 __decorate([
+    (0, swagger_1.ApiBearerAuth)("Bearer"),
+    (0, swagger_1.ApiOperation)({ summary: 'Gets data of all users.' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'success',
+        isArray: true,
+        type: user_dto_1.UserDto
+    }),
     (0, common_1.Get)('all'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getAll", null);
 __decorate([
+    (0, swagger_1.ApiBearerAuth)("Bearer"),
+    (0, swagger_1.ApiOperation)({ summary: `Updates a user's sign-in information.` }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'success',
+        type: user_dto_1.UserDto
+    }),
+    (0, swagger_1.ApiBody)({ type: sign_up_dto_1.SignUpDto }),
     (0, common_1.Put)(),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Request)()),
@@ -53,6 +74,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "update", null);
 __decorate([
+    (0, swagger_1.ApiBearerAuth)("Bearer"),
+    (0, swagger_1.ApiOperation)({ summary: `Deletes all data related to a user.` }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'success',
+        type: delete_user_response_dto_1.DeleteUserResponseDto,
+    }),
+    (0, swagger_1.ApiBody)({ type: delete_user_dto_1.DeleteUserDto }),
     (0, common_1.Delete)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -60,6 +89,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "deleteUser", null);
 UsersController = __decorate([
+    (0, swagger_1.ApiTags)("User management"),
     (0, common_1.Controller)('user'),
     __metadata("design:paramtypes", [users_service_1.UsersService])
 ], UsersController);
