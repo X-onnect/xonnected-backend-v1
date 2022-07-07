@@ -31,24 +31,25 @@ export class Wallet2Gateway implements OnGatewayConnection, OnGatewayDisconnect{
     @WebSocketServer() server;
 
     async handleConnection(client: any, ...args: any[]) {
-        console.log("connection detected")
+        console.log("connection detected from " + client.id)
     }
 
     async handleDisconnect(client: any) {
-        console.log("disconnection just happened")
+        console.log("disconnection just happened from " + client.id)
     }
 
     @SubscribeMessage('connect-wallet')
     async handleWalletConnection(@ConnectedSocket() client: Socket, @Request() req) {
         const authHeader = req.handshake.headers.authorization;
+        const authHeaderBackup = req.handshake.auth?.Authorization;
 
-        const validation = await this.walletService.validateConnection(authHeader);
+        const validation = await this.walletService.validateConnection(authHeader || authHeaderBackup);
 
         if (validation.isValid) {
             await this.walletService.connectToWallet(client, validation._id);
         }
         else {
-            return;
+            client.emit('connect-wallet', { error: 'unauthorized' });
         }
     }
 
@@ -74,7 +75,7 @@ export class Wallet2Gateway implements OnGatewayConnection, OnGatewayDisconnect{
             await this.walletService.requestTransfer(client, validation._id, receiverId, parseFloat(amount));
         }
         else {
-            return;
+            client.emit('request-payment', { error: 'unauthorized' });
         }
     }
 }

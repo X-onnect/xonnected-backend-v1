@@ -33,32 +33,33 @@ let Wallet2Service = class Wallet2Service {
     }
     async connectToWallet(client, _id) {
         const xummSdK = new xumm_sdk_1.XummSdk(env_1.env.XUMM_API_KEY, env_1.env.XUMM_API_SECRET);
+        var clientDisconnected = false;
         const request = {
             "txjson": {
                 "TransactionType": "SignIn"
             },
         };
+        client.on('disconnect', () => {
+            clientDisconnected = true;
+        });
         const payload = await xummSdK.payload.createAndSubscribe(request, event => {
             console.log("...waiting for user to sign or reject transaction...");
             if (event.data.signed === true) {
                 return event.data;
             }
-            if (event.data.signed === false) {
+            if (event.data.signed === false || clientDisconnected) {
                 return false;
             }
         });
         console.log("The user should scan this QR code with their xumm app to sign in: ", payload.created.refs.qr_png);
         client.emit('connect-wallet', { qrCode: payload.created.refs.qr_png, status: CONNECTION_STATUS.PENDING });
         const resolveData = await payload.resolved;
-        if (resolveData.signed === false) {
+        if (resolveData.signed === false || clientDisconnected) {
             console.log('The user rejected the sign transaction');
             client.emit('connect-wallet', { qrCode: payload.created.refs.qr_png, status: CONNECTION_STATUS.FAILED });
         }
         if (resolveData.signed === true) {
-            console.log('Whohooo! The sign in request was approved');
             const result = await xummSdK.payload.get(resolveData.payload_uuidv4);
-            console.log('User token:', result.application.issued_user_token);
-            console.log('User address:', result.response.signer);
             const userToken = result.application.issued_user_token;
             const userAddress = result.response.signer;
             const userData = await this.wallet2Model.findById(_id).exec();

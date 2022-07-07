@@ -22,19 +22,21 @@ let Wallet2Gateway = class Wallet2Gateway {
         this.walletService = walletService;
     }
     async handleConnection(client, ...args) {
-        console.log("connection detected");
+        console.log("connection detected from " + client.id);
     }
     async handleDisconnect(client) {
-        console.log("disconnection just happened");
+        console.log("disconnection just happened from " + client.id);
     }
     async handleWalletConnection(client, req) {
+        var _a;
         const authHeader = req.handshake.headers.authorization;
-        const validation = await this.walletService.validateConnection(authHeader);
+        const authHeaderBackup = (_a = req.handshake.auth) === null || _a === void 0 ? void 0 : _a.Authorization;
+        const validation = await this.walletService.validateConnection(authHeader || authHeaderBackup);
         if (validation.isValid) {
             await this.walletService.connectToWallet(client, validation._id);
         }
         else {
-            return;
+            client.emit('connect-wallet', { error: 'unauthorized' });
         }
     }
     async requestPayment(client, req, message) {
@@ -52,7 +54,7 @@ let Wallet2Gateway = class Wallet2Gateway {
             await this.walletService.requestTransfer(client, validation._id, receiverId, parseFloat(amount));
         }
         else {
-            return;
+            client.emit('request-payment', { error: 'unauthorized' });
         }
     }
 };
