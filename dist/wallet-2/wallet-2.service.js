@@ -96,18 +96,17 @@ let Wallet2Service = class Wallet2Service {
             const payload = await xummSdK.payload.createAndSubscribe(newRequest, event => {
                 console.log("...waiting for user to sign or reject transaction...");
                 if (event.data.signed === true) {
-                    console.log('Whohooo! The request was approved');
+                    console.log('The request was approved');
                     client.emit('request-payment', { qrCode: payload.created.refs.qr_png, status: CONNECTION_STATUS.SUCCESSFUL });
                     return event.data;
                 }
                 if (event.data.signed === false) {
-                    console.log('Oh fack! The sign request was rejected');
+                    console.log('The sign request was rejected');
                     client.emit('request-payment', { qrCode: payload.created.refs.qr_png, status: CONNECTION_STATUS.FAILED });
                     return false;
                 }
             });
             client.emit('request-payment', { qrCode: payload.created.refs.qr_png, status: CONNECTION_STATUS.PENDING });
-            console.log("If the user can't find the notification, show them this qr code just in case:", payload.created.refs.qr_png);
         }
         else {
             client.emit('request-payment', { error: 'An error occured while making the request.' });

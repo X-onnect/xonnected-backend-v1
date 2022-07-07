@@ -56,6 +56,7 @@ export class Wallet2Gateway implements OnGatewayConnection, OnGatewayDisconnect{
     @SubscribeMessage('request-payment')
     async requestPayment(@ConnectedSocket() client: Socket, @Request() req, @MessageBody() message: any) {
         const authHeader = req.handshake.headers.authorization;
+        const authHeaderBackup = req.handshake.auth?.Authorization;
 
         let parsedMessage: any;
 
@@ -64,7 +65,7 @@ export class Wallet2Gateway implements OnGatewayConnection, OnGatewayDisconnect{
         }
         catch (e) {}
 
-        const validation = await this.walletService.validateConnection(authHeader);
+        const validation = await this.walletService.validateConnection(authHeader || authHeaderBackup);
 
         const { receiverId, amount } = parsedMessage;
 

@@ -40,13 +40,15 @@ let Wallet2Gateway = class Wallet2Gateway {
         }
     }
     async requestPayment(client, req, message) {
+        var _a;
         const authHeader = req.handshake.headers.authorization;
+        const authHeaderBackup = (_a = req.handshake.auth) === null || _a === void 0 ? void 0 : _a.Authorization;
         let parsedMessage;
         try {
             parsedMessage = JSON.parse(message);
         }
         catch (e) { }
-        const validation = await this.walletService.validateConnection(authHeader);
+        const validation = await this.walletService.validateConnection(authHeader || authHeaderBackup);
         const { receiverId, amount } = parsedMessage;
         console.log(receiverId, amount);
         if (validation.isValid && amount && !isNaN(parseFloat(amount)) && receiverId) {

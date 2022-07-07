@@ -130,14 +130,14 @@ export class PostsService {
         return updatedPosts;
     }
 
-    async subscribeToPost(userId: string, postId: string) {
+    async subscribeToPost(userId: Types.ObjectId, postId: string) {
         const post = await this.postModel.findById(postId).exec();
 
         if (post) {
             const subscribers = post.subscribers;
 
-            if (subscribers.indexOf(userId) === -1) {
-                await this.postModel.findByIdAndUpdate(postId, { subscribers }).exec();
+            if (subscribers.indexOf(userId.toString()) === -1) {
+                await this.postModel.findByIdAndUpdate(postId, { subscribers: [...subscribers, userId.toString()] }).exec();
 
                 return await this.postModel.findById(postId);
             }
@@ -160,7 +160,7 @@ export class PostsService {
         const subscribers = user.subscribers;
 
         if (subscribers.indexOf(userId) === -1) {
-            await this.userModel.findByIdAndUpdate(subscribee, { subscribers }).exec();
+            await this.userModel.findByIdAndUpdate(subscribee, { subscribers: [...subscribers, userId.toString()] }).exec();
         }
 
         await this.postModel.updateMany({ createdBy: subscribee }, { subscribersFromCreator: subscribers });
