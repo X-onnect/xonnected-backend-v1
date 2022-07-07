@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@nestjs/common": "^8.1.1",
+    "@nestjs/config": "^2.1.0",
     "@nestjs/core": "^8.1.1",
     "@nestjs/jwt": "^8.0.1",
     "@nestjs/mongoose": "^9.1.1",
@@ -81,5 +82,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "engines": {
+    "node": "16.15.0"
   }
 }
