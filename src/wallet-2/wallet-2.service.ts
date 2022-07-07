@@ -24,11 +24,17 @@ export class Wallet2Service {
     async connectToWallet(client: Socket, _id: Types.ObjectId | string) {
         const xummSdK = new XummSdk(env.XUMM_API_KEY, env.XUMM_API_SECRET);
 
+        var clientDisconnected = false;
+
         const request: XummPostPayloadBodyJson = {
             "txjson": {
                 "TransactionType": "SignIn"
             },
         }; 
+
+        client.on('disconnect', () => {
+            clientDisconnected = true;
+        })
 
         // Creates a user signin request
         const payload = await xummSdK.payload.createAndSubscribe(request, event => {
@@ -38,7 +44,7 @@ export class Wallet2Service {
                 return event.data;
             }
 
-            if (event.data.signed === false) {
+            if (event.data.signed === false || clientDisconnected) {
                 return false;
             }
         });
@@ -50,20 +56,15 @@ export class Wallet2Service {
         // waits for the user to reject or accept signin request
         const resolveData = await payload.resolved as AnyJson;
 
-        if (resolveData.signed === false) {
+        if (resolveData.signed === false || clientDisconnected) {
             console.log('The user rejected the sign transaction');
             client.emit('connect-wallet', { qrCode: payload.created.refs.qr_png, status: CONNECTION_STATUS.FAILED });
         }
         
         if (resolveData.signed === true) {
-            console.log('Whohooo! The sign in request was approved');
-
             const result = await xummSdK.payload.get(resolveData.payload_uuidv4);
 
             // Data to back up in db
-            console.log('User token:', result.application.issued_user_token);
-            console.log('User address:', result.response.signer);
-
             const userToken = result.application.issued_user_token;
             const userAddress = result.response.signer;
 
