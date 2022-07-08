@@ -11,6 +11,8 @@ import {
 import { CreatePostDto } from 'src/dto/create-post.dto';
 import { PostDto } from 'src/dto/response/post.dto';
 import { DeleteUserResponseDto } from 'src/dto/response/delete-user-response.dto';
+import { SizeLimitInterceptor } from 'src/utils/interceptors/size-limit.interceptor';
+import { UseInterceptors } from '@nestjs/common';
 import { EditPostDto } from 'src/dto/edit-post.dto';
 
 @ApiTags("Post Management")
@@ -26,6 +28,7 @@ export class PostsController {
         type: PostDto,
     })
     @ApiBody({ type: CreatePostDto })
+    @UseInterceptors(new SizeLimitInterceptor(1024 * 1024 * 5)) //5mb limit for image upload
     @Post()
     async createPost(@Request() req, @Body() body) {
         const { _id } = req.user;
@@ -176,6 +179,7 @@ export class PostsController {
     })
     @ApiBody({ type: CreatePostDto })
     @ApiParam({ description: 'id of the post to comment on.', name: 'id' })
+    @UseInterceptors(new SizeLimitInterceptor(1024 * 1024 * 5)) //5mb limit for image upload
     @Post('comment/:id')
     async commentOnPost(@Request() req, @Body() body, @Param() param) {
         const { _id } = req.user;

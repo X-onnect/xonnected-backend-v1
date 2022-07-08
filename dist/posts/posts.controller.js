@@ -19,6 +19,8 @@ const swagger_1 = require("@nestjs/swagger");
 const create_post_dto_1 = require("../dto/create-post.dto");
 const post_dto_1 = require("../dto/response/post.dto");
 const delete_user_response_dto_1 = require("../dto/response/delete-user-response.dto");
+const size_limit_interceptor_1 = require("../utils/interceptors/size-limit.interceptor");
+const common_2 = require("@nestjs/common");
 const edit_post_dto_1 = require("../dto/edit-post.dto");
 let PostsController = class PostsController {
     constructor(postsService) {
@@ -91,6 +93,7 @@ __decorate([
         type: post_dto_1.PostDto,
     }),
     (0, swagger_1.ApiBody)({ type: create_post_dto_1.CreatePostDto }),
+    (0, common_2.UseInterceptors)(new size_limit_interceptor_1.SizeLimitInterceptor(1024 * 1024 * 5)),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Body)()),
@@ -237,6 +240,7 @@ __decorate([
     }),
     (0, swagger_1.ApiBody)({ type: create_post_dto_1.CreatePostDto }),
     (0, swagger_1.ApiParam)({ description: 'id of the post to comment on.', name: 'id' }),
+    (0, common_2.UseInterceptors)(new size_limit_interceptor_1.SizeLimitInterceptor(1024 * 1024 * 5)),
     (0, common_1.Post)('comment/:id'),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Body)()),
