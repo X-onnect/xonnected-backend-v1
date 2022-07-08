@@ -37,7 +37,7 @@ let PostsService = class PostsService {
                 subscribers.push(...postMaker.subscribers);
             }
         }
-        const createdPost = new this.postModel(Object.assign(Object.assign({}, post), { likes: [], createdAt: new Date().toISOString(), comments: [], createdBy: _id, subscribers: [], subscribersFromCreator: subscribers }));
+        const createdPost = new this.postModel(Object.assign(Object.assign({}, post), { likes: [], createdAt: new Date().toISOString(), comments: [], createdBy: _id, subscribers: [], subscribersFromCreator: subscribers, isComment: false }));
         return await createdPost.save();
     }
     async deletePost(postId, userId) {
@@ -74,8 +74,7 @@ let PostsService = class PostsService {
             throw new common_1.UnauthorizedException();
         }
         const { text } = post;
-        await this.postModel.findByIdAndUpdate(postId, { text });
-        return await this.postModel.findById(postId);
+        return await this.postModel.findByIdAndUpdate(postId, { text }, { new: true });
     }
     async getPostById(postId, userId) {
         let post;
@@ -147,8 +146,7 @@ let PostsService = class PostsService {
             throw new exceptions_1.Exceptions.RecordNotFoundException();
         }
         if (post.likes.indexOf(new mongoose_1.Types.ObjectId(userId)) === -1) {
-            await this.postModel.findByIdAndUpdate(postId, { likes: [...post.likes, userId] });
-            return await this.postModel.findById(postId).exec();
+            return await this.postModel.findByIdAndUpdate(postId, { '$push': { likes: userId } }, { new: true }).exec();
         }
         return post;
     }
@@ -170,10 +168,20 @@ let PostsService = class PostsService {
                 else
                     return true;
             });
-            await this.postModel.findByIdAndUpdate(postId, { likes: updatedLikes });
-            return await this.postModel.findById(postId).exec();
+            return await this.postModel.findByIdAndUpdate(postId, { likes: updatedLikes }, { new: true }).exec();
         }
         return post;
+    }
+    async commentOnPost(postId, post, _id) {
+        const isPostObjectComplete = (0, objectsHaveTheSameKeys_1.objectsHaveTheSameKeys)(post_schema_1.postDTO, post);
+        if (!isPostObjectComplete) {
+            throw new exceptions_1.Exceptions.IncompleteRequestException();
+        }
+        const createdPost = Object.assign(Object.assign({}, post), { likes: [], createdAt: new Date().toISOString(), comments: [], createdBy: new mongoose_1.Types.ObjectId(_id), subscribers: [], subscribersFromCreator: [], isComment: true, isFree: true, price: 0 });
+        const updatedPost = await this.postModel.findByIdAndUpdate(postId, { $push: { comments: createdPost } }, { new: true });
+        if (!updatedPost)
+            throw new exceptions_1.Exceptions.RecordNotFoundException();
+        return updatedPost;
     }
 };
 PostsService = __decorate([

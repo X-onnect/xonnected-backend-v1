@@ -36,6 +36,9 @@ export class Post {
 
   @Prop({ required: true })
   subscribers: string[];
+
+  @Prop({ required: false })
+  isComment: boolean;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

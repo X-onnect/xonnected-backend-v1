@@ -166,4 +166,20 @@ export class PostsController {
 
         return await this.postsService.unlikePost(id, userId);
     }
+
+    @ApiBearerAuth("Bearer")
+    @ApiOperation({ summary: 'Comments on a post.' })
+    @ApiResponse({
+        status: 200,
+        description: 'Comment created successfully',
+        type: PostDto,
+    })
+    @ApiBody({ type: CreatePostDto })
+    @ApiParam({ description: 'id of the post to comment on.', name: 'id' })
+    @Post('comment/:id')
+    async commentOnPost(@Request() req, @Body() body, @Param() param) {
+        const { _id } = req.user;
+        const postId = param.id;
+        return await this.postsService.commentOnPost(postId, body, _id);
+    }
 }

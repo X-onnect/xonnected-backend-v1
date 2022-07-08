@@ -30,4 +30,7 @@ export declare class PostsController {
     }>;
     likePost(request: any, param: any): Promise<import("../schema/post.schema").PostDocument>;
     dislikePost(request: any, param: any): Promise<import("../schema/post.schema").PostDocument>;
+    commentOnPost(req: any, body: any, param: any): Promise<import("../schema/post.schema").Post & import("mongoose").Document<any, any, any> & {
+        _id: import("mongoose").Types.ObjectId;
+    }>;
 }

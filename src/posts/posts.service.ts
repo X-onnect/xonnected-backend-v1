@@ -38,6 +38,7 @@ export class PostsService {
             createdBy: _id,
             subscribers: [],
             subscribersFromCreator: subscribers,
+            isComment: false,
         });
 
         return await createdPost.save();
@@ -86,9 +87,7 @@ export class PostsService {
         
         const { text } = post;
         
-        await this.postModel.findByIdAndUpdate(postId, { text })
-
-        return await this.postModel.findById(postId)
+        return await this.postModel.findByIdAndUpdate(postId, { text }, { new: true })
     }
 
     async getPostById(postId: Types.ObjectId, userId: Types.ObjectId) {
@@ -182,9 +181,7 @@ export class PostsService {
         }
 
         if (post.likes.indexOf(new Types.ObjectId(userId)) === -1) {
-            await this.postModel.findByIdAndUpdate(postId, { likes: [...post.likes, userId] });
-
-            return await this.postModel.findById(postId).exec();
+            return await this.postModel.findByIdAndUpdate(postId, {'$push': { likes: userId }}, { new: true }).exec();
         }
 
         return post;
@@ -209,11 +206,36 @@ export class PostsService {
                 else return true;
             });
 
-            await this.postModel.findByIdAndUpdate(postId, { likes: updatedLikes });
-
-            return await this.postModel.findById(postId).exec();
+            return await this.postModel.findByIdAndUpdate(postId, { likes: updatedLikes }, { new: true }).exec();
         }
 
         return post;
+    }
+
+    async commentOnPost(postId: Types.ObjectId, post: typeof postDTO, _id: string) {
+        const isPostObjectComplete = objectsHaveTheSameKeys(postDTO, post);
+
+        if (!isPostObjectComplete) {
+            throw new Exceptions.IncompleteRequestException();
+        }
+
+        const createdPost: Post = {
+            ...post,
+            likes: [],
+            createdAt: new Date().toISOString(),
+            comments: [],
+            createdBy: new Types.ObjectId(_id),
+            subscribers: [],
+            subscribersFromCreator: [],
+            isComment: true,
+            isFree: true,
+            price: 0,
+        };
+
+        const updatedPost = await this.postModel.findByIdAndUpdate(postId, { $push: { comments: createdPost } }, { new: true });
+
+        if (!updatedPost) throw new Exceptions.RecordNotFoundException();
+
+        return updatedPost;
     }
 }

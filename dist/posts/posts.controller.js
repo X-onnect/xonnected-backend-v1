@@ -76,6 +76,11 @@ let PostsController = class PostsController {
         const userId = (_a = request.user) === null || _a === void 0 ? void 0 : _a._id;
         return await this.postsService.unlikePost(id, userId);
     }
+    async commentOnPost(req, body, param) {
+        const { _id } = req.user;
+        const postId = param.id;
+        return await this.postsService.commentOnPost(postId, body, _id);
+    }
 };
 __decorate([
     (0, swagger_1.ApiBearerAuth)("Bearer"),
@@ -222,6 +227,24 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], PostsController.prototype, "dislikePost", null);
+__decorate([
+    (0, swagger_1.ApiBearerAuth)("Bearer"),
+    (0, swagger_1.ApiOperation)({ summary: 'Comments on a post.' }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'Comment created successfully',
+        type: post_dto_1.PostDto,
+    }),
+    (0, swagger_1.ApiBody)({ type: create_post_dto_1.CreatePostDto }),
+    (0, swagger_1.ApiParam)({ description: 'id of the post to comment on.', name: 'id' }),
+    (0, common_1.Post)('comment/:id'),
+    __param(0, (0, common_1.Request)()),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Param)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object, Object]),
+    __metadata("design:returntype", Promise)
+], PostsController.prototype, "commentOnPost", null);
 PostsController = __decorate([
     (0, swagger_1.ApiTags)("Post Management"),
     (0, common_1.Controller)('post'),

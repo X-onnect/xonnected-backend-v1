@@ -28,4 +28,7 @@ export declare class PostsService {
     }>;
     likePost(postId: string, userId: string): Promise<PostDocument>;
     unlikePost(postId: string, userId: Types.ObjectId): Promise<PostDocument>;
+    commentOnPost(postId: Types.ObjectId, post: typeof postDTO, _id: string): Promise<Post & import("mongoose").Document<any, any, any> & {
+        _id: Types.ObjectId;
+    }>;
 }

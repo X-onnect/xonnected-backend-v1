@@ -11,6 +11,7 @@ export declare class Post {
     price: number;
     subscribersFromCreator: string[];
     subscribers: string[];
+    isComment: boolean;
 }
 export declare const PostSchema: mongoose.Schema<Post, mongoose.Model<Post, any, any, any, any>, {}, {}, any, {}, "type", Post>;
 export declare const postDTO: {
