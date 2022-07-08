@@ -6,12 +6,13 @@ export declare class Post {
     likes: mongoose.Types.ObjectId[];
     createdAt: string;
     createdBy: mongoose.Types.ObjectId;
-    comments: Post[];
+    comments: string[];
     isFree: boolean;
     price: number;
     subscribersFromCreator: string[];
     subscribers: string[];
     isComment: boolean;
+    parent: mongoose.Types.ObjectId | null;
 }
 export declare const PostSchema: mongoose.Schema<Post, mongoose.Model<Post, any, any, any, any>, {}, {}, any, {}, "type", Post>;
 export declare const postDTO: {

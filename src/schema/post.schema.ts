@@ -23,7 +23,7 @@ export class Post {
   createdBy: mongoose.Types.ObjectId;
 
   @Prop({ required: true })
-  comments: Post[];
+  comments: string[];
 
   @Prop({ required: true })
   isFree: boolean;
@@ -37,8 +37,11 @@ export class Post {
   @Prop({ required: true })
   subscribers: string[];
 
-  @Prop({ required: false })
+  @Prop({ required: true })
   isComment: boolean;
+
+  @Prop({ required: false })
+  parent: mongoose.Types.ObjectId | null;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

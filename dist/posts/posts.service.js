@@ -37,7 +37,7 @@ let PostsService = class PostsService {
                 subscribers.push(...postMaker.subscribers);
             }
         }
-        const createdPost = new this.postModel(Object.assign(Object.assign({}, post), { likes: [], createdAt: new Date().toISOString(), comments: [], createdBy: _id, subscribers: [], subscribersFromCreator: subscribers, isComment: false }));
+        const createdPost = new this.postModel(Object.assign(Object.assign({}, post), { likes: [], createdAt: new Date().toISOString(), comments: [], createdBy: _id, subscribers: [], subscribersFromCreator: subscribers, isComment: false, parent: '' }));
         return await createdPost.save();
     }
     async deletePost(postId, userId) {
@@ -90,10 +90,15 @@ let PostsService = class PostsService {
         const canBeViewed = !post.isFree && !post.subscribers.includes(userId.toString()) && (post.createdBy.toString() !== userId.toString()) ?
             false :
             true;
-        return { post, canBeViewed };
+        const comments = await this.postModel.find({ parent: postId }).exec();
+        return {
+            post,
+            comments,
+            canBeViewed
+        };
     }
     async getAllPosts(userId) {
-        const posts = await this.postModel.find({}).exec();
+        const posts = await this.postModel.find({ isComment: false }).exec();
         const updatedPosts = posts.reverse().map((post) => {
             const canBeViewed = !post.isFree &&
                 !post.subscribers.includes(userId.toString()) &&
@@ -177,8 +182,9 @@ let PostsService = class PostsService {
         if (!isPostObjectComplete) {
             throw new exceptions_1.Exceptions.IncompleteRequestException();
         }
-        const createdPost = Object.assign(Object.assign({}, post), { likes: [], createdAt: new Date().toISOString(), comments: [], createdBy: new mongoose_1.Types.ObjectId(_id), subscribers: [], subscribersFromCreator: [], isComment: true, isFree: true, price: 0 });
-        const updatedPost = await this.postModel.findByIdAndUpdate(postId, { $push: { comments: createdPost } }, { new: true });
+        const createdPost = new this.postModel(Object.assign(Object.assign({}, post), { likes: [], createdAt: new Date().toISOString(), comments: [], createdBy: new mongoose_1.Types.ObjectId(_id), subscribers: [], subscribersFromCreator: [], isComment: true, isFree: true, price: 0, parent: postId }));
+        const newComment = await createdPost.save();
+        const updatedPost = await this.postModel.findByIdAndUpdate(postId, { $push: { comments: newComment._id } }, { new: true });
         if (!updatedPost)
             throw new exceptions_1.Exceptions.RecordNotFoundException();
         return updatedPost;

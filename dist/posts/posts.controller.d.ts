@@ -14,6 +14,9 @@ export declare class PostsController {
     }>;
     getPost(param: any, req: any): Promise<{
         post: import("../schema/post.schema").PostDocument;
+        comments: (import("../schema/post.schema").Post & import("mongoose").Document<any, any, any> & {
+            _id: import("mongoose").Types.ObjectId;
+        })[];
         canBeViewed: boolean;
     }>;
     getAllPosts(req: any): Promise<{

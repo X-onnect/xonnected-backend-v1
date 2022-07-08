@@ -55,9 +55,13 @@ __decorate([
     __metadata("design:type", Array)
 ], Post.prototype, "subscribers", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: false }),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", Boolean)
 ], Post.prototype, "isComment", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: false }),
+    __metadata("design:type", mongoose.Types.ObjectId)
+], Post.prototype, "parent", void 0);
 Post = __decorate([
     (0, mongoose_1.Schema)()
 ], Post);

@@ -39,6 +39,7 @@ export class PostsService {
             subscribers: [],
             subscribersFromCreator: subscribers,
             isComment: false,
+            parent: '',
         });
 
         return await createdPost.save();
@@ -106,12 +107,19 @@ export class PostsService {
         const canBeViewed = !post.isFree && !post.subscribers.includes(userId.toString()) && (post.createdBy.toString() !== userId.toString()) ? 
             false : 
             true;
+        
+        const comments = await this.postModel.find({ parent: postId }).exec();
 
-        return { post, canBeViewed }
+        return { 
+            post,
+            comments,
+            canBeViewed 
+        }
     }
 
     async getAllPosts(userId: Types.ObjectId) {
-        const posts = await this.postModel.find({}).exec();
+        const posts = await this.postModel.find({ isComment: false }).exec();
+        //const posts = await this.postModel.find({ $or: [{ isComment: false }] }).exec();
 
         const updatedPosts = posts.reverse().map((post) => {
         const canBeViewed = 
@@ -219,7 +227,7 @@ export class PostsService {
             throw new Exceptions.IncompleteRequestException();
         }
 
-        const createdPost: Post = {
+        const createdPost = new this.postModel({
             ...post,
             likes: [],
             createdAt: new Date().toISOString(),
@@ -230,9 +238,12 @@ export class PostsService {
             isComment: true,
             isFree: true,
             price: 0,
-        };
+            parent: postId,
+        });
 
-        const updatedPost = await this.postModel.findByIdAndUpdate(postId, { $push: { comments: createdPost } }, { new: true });
+        const newComment = await createdPost.save();
+
+        const updatedPost = await this.postModel.findByIdAndUpdate(postId, { $push: { comments: newComment._id } }, { new: true });
 
         if (!updatedPost) throw new Exceptions.RecordNotFoundException();
 

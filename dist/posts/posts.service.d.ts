@@ -12,6 +12,9 @@ export declare class PostsService {
     }>;
     getPostById(postId: Types.ObjectId, userId: Types.ObjectId): Promise<{
         post: PostDocument;
+        comments: (Post & import("mongoose").Document<any, any, any> & {
+            _id: Types.ObjectId;
+        })[];
         canBeViewed: boolean;
     }>;
     getAllPosts(userId: Types.ObjectId): Promise<{
