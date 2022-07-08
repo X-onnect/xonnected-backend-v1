@@ -243,10 +243,14 @@ export class PostsService {
 
         const newComment = await createdPost.save();
 
-        const updatedPost = await this.postModel.findByIdAndUpdate(postId, { $push: { comments: newComment._id } }, { new: true });
+        try {
+            const updatedPost = await this.postModel.findByIdAndUpdate(postId, { $push: { comments: newComment._id } }, { new: true });
 
-        if (!updatedPost) throw new Exceptions.RecordNotFoundException();
+            if (!updatedPost) throw new Exceptions.RecordNotFoundException();
 
-        return updatedPost;
+            return updatedPost;
+        } catch(e) {
+            throw new Exceptions.RecordNotFoundException()
+        }
     }
 }

@@ -4,7 +4,7 @@ export class EmailExistsException extends HttpException {
     constructor() {
         super({
             statusCode: HttpStatus.UNAUTHORIZED,
-            message: "A user with this email already exists."
+            error: "A user with this email already exists."
         }, HttpStatus.UNAUTHORIZED);
     }
 }
