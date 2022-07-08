@@ -6,7 +6,7 @@ class IncompleteRequestException extends common_1.HttpException {
     constructor() {
         super({
             statusCode: common_1.HttpStatus.BAD_REQUEST,
-            message: "Your request body is missing certain required parameters."
+            error: "Your request body is missing certain required parameters."
         }, common_1.HttpStatus.BAD_REQUEST);
     }
 }

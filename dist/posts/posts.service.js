@@ -184,10 +184,15 @@ let PostsService = class PostsService {
         }
         const createdPost = new this.postModel(Object.assign(Object.assign({}, post), { likes: [], createdAt: new Date().toISOString(), comments: [], createdBy: new mongoose_1.Types.ObjectId(_id), subscribers: [], subscribersFromCreator: [], isComment: true, isFree: true, price: 0, parent: postId }));
         const newComment = await createdPost.save();
-        const updatedPost = await this.postModel.findByIdAndUpdate(postId, { $push: { comments: newComment._id } }, { new: true });
-        if (!updatedPost)
+        try {
+            const updatedPost = await this.postModel.findByIdAndUpdate(postId, { $push: { comments: newComment._id } }, { new: true });
+            if (!updatedPost)
+                throw new exceptions_1.Exceptions.RecordNotFoundException();
+            return updatedPost;
+        }
+        catch (e) {
             throw new exceptions_1.Exceptions.RecordNotFoundException();
-        return updatedPost;
+        }
     }
 };
 PostsService = __decorate([

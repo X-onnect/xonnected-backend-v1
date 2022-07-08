@@ -6,7 +6,7 @@ class EmailExistsException extends common_1.HttpException {
     constructor() {
         super({
             statusCode: common_1.HttpStatus.UNAUTHORIZED,
-            message: "A user with this email already exists."
+            error: "A user with this email already exists."
         }, common_1.HttpStatus.UNAUTHORIZED);
     }
 }

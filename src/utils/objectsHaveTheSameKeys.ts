@@ -9,7 +9,6 @@ export const objectsHaveTheSameKeys = (object1: Object, object2: Object): boolea
 
     try {
         Object.keys(object1).every(key => {
-            console.log(key, object2[key])
             if (object2[key] !== undefined) return true
             else {
                 isIntact = false;
@@ -17,7 +16,6 @@ export const objectsHaveTheSameKeys = (object1: Object, object2: Object): boolea
             }
         });
     } catch (e) {
-        console.log(e);
         return false;
     }
 

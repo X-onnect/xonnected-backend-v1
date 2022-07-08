@@ -179,7 +179,7 @@ export class PostsController {
     })
     @ApiBody({ type: CreatePostDto })
     @ApiParam({ description: 'id of the post to comment on.', name: 'id' })
-    @UseInterceptors(new SizeLimitInterceptor(1024 * 1024 * 5)) //5mb limit for image upload
+    @UseInterceptors(new SizeLimitInterceptor(1024 * 1024 * 50)) //5mb limit for image upload
     @Post('comment/:id')
     async commentOnPost(@Request() req, @Body() body, @Param() param) {
         const { _id } = req.user;

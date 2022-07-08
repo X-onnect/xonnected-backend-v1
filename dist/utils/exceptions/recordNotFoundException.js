@@ -6,7 +6,7 @@ class RecordNotFoundException extends common_1.HttpException {
     constructor() {
         super({
             statusCode: common_1.HttpStatus.BAD_REQUEST,
-            message: "The requested record was not found in the database."
+            error: "The requested record was not found in the database."
         }, common_1.HttpStatus.BAD_REQUEST);
     }
 }

@@ -240,7 +240,7 @@ __decorate([
     }),
     (0, swagger_1.ApiBody)({ type: create_post_dto_1.CreatePostDto }),
     (0, swagger_1.ApiParam)({ description: 'id of the post to comment on.', name: 'id' }),
-    (0, common_2.UseInterceptors)(new size_limit_interceptor_1.SizeLimitInterceptor(1024 * 1024 * 5)),
+    (0, common_2.UseInterceptors)(new size_limit_interceptor_1.SizeLimitInterceptor(1024 * 1024 * 50)),
     (0, common_1.Post)('comment/:id'),
     __param(0, (0, common_1.Request)()),
     __param(1, (0, common_1.Body)()),

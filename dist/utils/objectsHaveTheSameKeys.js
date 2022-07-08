@@ -5,7 +5,6 @@ const objectsHaveTheSameKeys = (object1, object2) => {
     let isIntact = true;
     try {
         Object.keys(object1).every(key => {
-            console.log(key, object2[key]);
             if (object2[key] !== undefined)
                 return true;
             else {
@@ -15,7 +14,6 @@ const objectsHaveTheSameKeys = (object1, object2) => {
         });
     }
     catch (e) {
-        console.log(e);
         return false;
     }
     return isIntact;

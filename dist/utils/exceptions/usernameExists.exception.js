@@ -5,8 +5,8 @@ const common_1 = require("@nestjs/common");
 class UsernameExistsException extends common_1.HttpException {
     constructor() {
         super({
-            statusCode: common_1.HttpStatus.UNAUTHORIZED,
-            message: "A user with this username already exists."
+            statusCode: common_1.HttpStatus.BAD_REQUEST,
+            error: "A user with this username already exists."
         }, common_1.HttpStatus.UNAUTHORIZED);
     }
 }

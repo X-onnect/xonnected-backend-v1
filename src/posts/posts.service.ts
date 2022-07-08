@@ -119,7 +119,6 @@ export class PostsService {
 
     async getAllPosts(userId: Types.ObjectId) {
         const posts = await this.postModel.find({ isComment: false }).exec();
-        //const posts = await this.postModel.find({ $or: [{ isComment: false }] }).exec();
 
         const updatedPosts = posts.reverse().map((post) => {
         const canBeViewed = 

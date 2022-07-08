@@ -50,13 +50,16 @@ let Wallet2Gateway = class Wallet2Gateway {
         catch (e) { }
         const validation = await this.walletService.validateConnection(authHeader || authHeaderBackup);
         const { receiverId, amount } = parsedMessage;
-        console.log(receiverId, amount);
-        if (validation.isValid && amount && !isNaN(parseFloat(amount)) && receiverId) {
-            console.log('something');
-            await this.walletService.requestTransfer(client, validation._id, receiverId, parseFloat(amount));
+        try {
+            if (validation.isValid && !isNaN(parseFloat(amount)) && (receiverId !== undefined)) {
+                await this.walletService.requestTransfer(client, validation._id, receiverId, parseFloat(amount));
+            }
+            else {
+                client.emit('request-payment', { error: 'unauthorized' });
+            }
         }
-        else {
-            client.emit('request-payment', { error: 'unauthorized' });
+        catch (e) {
+            client.emit('request-payment', { error: 'bad request' });
         }
     }
 };
