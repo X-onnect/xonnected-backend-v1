@@ -137,10 +137,10 @@ let PostsService = class PostsService {
             throw new exceptions_1.Exceptions.RecordNotFoundException();
         }
         const subscribers = user.subscribers;
-        if (subscribers.indexOf(userId) === -1) {
-            await this.userModel.findByIdAndUpdate(subscribee, { subscribers: [...subscribers, userId.toString()] }).exec();
+        if (subscribers.indexOf(userId.toString()) === -1) {
+            await this.userModel.findByIdAndUpdate(subscribee, { $push: { subscribers: userId.toString() } }).exec();
         }
-        await this.postModel.updateMany({ createdBy: subscribee }, { subscribersFromCreator: subscribers });
+        await this.postModel.updateMany({ createdBy: subscribee }, { $push: { subscribersFromCreator: userId.toString() } });
         return { message: 'Success' };
     }
     async likePost(postId, userId) {
