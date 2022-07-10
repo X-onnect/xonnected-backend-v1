@@ -12,6 +12,7 @@ import { UserDto } from 'src/dto/response/user.dto';
 import { SignUpDto } from 'src/dto/sign-up.dto';
 import { DeleteUserDto } from 'src/dto/delete-user.dto';
 import { DeleteUserResponseDto } from 'src/dto/response/delete-user-response.dto';
+import { ProfileDto } from 'src/schema/profile.schema';
 
 @ApiTags("User management")
 @Controller('user')
@@ -25,7 +26,7 @@ export class UsersController {
         description: 'success',
         type: UserDto
     })
-    @ApiParam({ description: 'id of the post to be retrieved.', name: 'id' })
+    @ApiParam({ description: 'id of the user to be retrieved.', name: 'id' })
     @Get(":id")
     async getUser(@Param() params) {
         const { id } = params;
@@ -80,5 +81,20 @@ export class UsersController {
         else {
             return { message: 'No match found' }
         }
+    }
+
+    @ApiBearerAuth("Bearer")
+    @ApiOperation({ summary: `This updates a user's profile information.` })
+    @ApiResponse({ 
+        status: 200,  
+        description: 'success',
+        type: ProfileDto,
+    })
+    @ApiBody({ type: ProfileDto })
+    @Put('profile')
+    async updateProfile(@Body() body: ProfileDto, @Request() req) {
+        const { _id } = req.user;
+    
+        return await this.usersService.updateProfile(body, _id);
     }
 }

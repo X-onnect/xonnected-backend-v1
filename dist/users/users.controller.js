@@ -20,6 +20,7 @@ const user_dto_1 = require("../dto/response/user.dto");
 const sign_up_dto_1 = require("../dto/sign-up.dto");
 const delete_user_dto_1 = require("../dto/delete-user.dto");
 const delete_user_response_dto_1 = require("../dto/response/delete-user-response.dto");
+const profile_schema_1 = require("../schema/profile.schema");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -46,6 +47,10 @@ let UsersController = class UsersController {
             return { message: 'No match found' };
         }
     }
+    async updateProfile(body, req) {
+        const { _id } = req.user;
+        return await this.usersService.updateProfile(body, _id);
+    }
 };
 __decorate([
     (0, swagger_1.ApiBearerAuth)("Bearer"),
@@ -55,7 +60,7 @@ __decorate([
         description: 'success',
         type: user_dto_1.UserDto
     }),
-    (0, swagger_1.ApiParam)({ description: 'id of the post to be retrieved.', name: 'id' }),
+    (0, swagger_1.ApiParam)({ description: 'id of the user to be retrieved.', name: 'id' }),
     (0, common_1.Get)(":id"),
     __param(0, (0, common_1.Param)()),
     __metadata("design:type", Function),
@@ -107,6 +112,22 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "deleteUser", null);
+__decorate([
+    (0, swagger_1.ApiBearerAuth)("Bearer"),
+    (0, swagger_1.ApiOperation)({ summary: `This updates a user's profile information.` }),
+    (0, swagger_1.ApiResponse)({
+        status: 200,
+        description: 'success',
+        type: profile_schema_1.ProfileDto,
+    }),
+    (0, swagger_1.ApiBody)({ type: profile_schema_1.ProfileDto }),
+    (0, common_1.Put)('profile'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [profile_schema_1.ProfileDto, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "updateProfile", null);
 UsersController = __decorate([
     (0, swagger_1.ApiTags)("User management"),
     (0, common_1.Controller)('user'),

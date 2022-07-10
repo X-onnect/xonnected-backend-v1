@@ -20,16 +20,48 @@ const mongoose_2 = require("@nestjs/mongoose");
 const user_schema_1 = require("../schema/user.schema");
 const wallet_2_schema_1 = require("../schema/wallet-2.schema");
 const objectsHaveTheSameKeys_1 = require("../utils/objectsHaveTheSameKeys");
+const profile_schema_1 = require("../schema/profile.schema");
 let UsersService = class UsersService {
-    constructor(userModel, wallet2Model) {
+    constructor(userModel, wallet2Model, profileModel) {
         this.userModel = userModel;
         this.wallet2Model = wallet2Model;
+        this.profileModel = profileModel;
     }
     async findOne(email) {
         return this.userModel.findOne({ email }).exec();
     }
+    async createUserProfile(_id) {
+        const newProfile = new this.profileModel({
+            image: '',
+            displayName: '',
+            subscriptionPrice: 0,
+            _id,
+        });
+        return await newProfile.save();
+    }
     async findUserById(_id) {
-        return this.userModel.findOne({ _id }).exec();
+        const user = await this.userModel.findById(_id).exec();
+        if (!user)
+            throw new exceptions_1.Exceptions.RecordNotFoundException();
+        let savedProfile = await this.profileModel.findById(_id).exec();
+        if (!savedProfile) {
+            savedProfile = await this.createUserProfile(_id);
+        }
+        const profile = {
+            image: savedProfile.image,
+            displayName: savedProfile.displayName,
+            subscriptionPrice: savedProfile.subscriptionPrice,
+        };
+        const userBundled = {
+            _id,
+            email: user.email,
+            username: user.username,
+            createdAt: user.createdAt,
+            subscribers: user.subscribers,
+            subscribedTo: user.subscribedTo,
+            profile,
+        };
+        return userBundled;
     }
     async findAll() {
         return this.userModel.find({}, "-password").exec();
@@ -48,21 +80,47 @@ let UsersService = class UsersService {
         }
         const createdUser = new this.userModel(Object.assign(Object.assign({}, user), { createdAt: new Date().toISOString() }));
         const savedCreatedUser = await createdUser.save();
-        if (savedCreatedUser) {
-            const createdWallet = new this.wallet2Model({
-                _id: savedCreatedUser._id,
-                address: '',
-                token: '',
-                createdAt: savedCreatedUser.createdAt,
-            });
-            await createdWallet.save();
-        }
-        return savedCreatedUser;
+        const createdWallet = new this.wallet2Model({
+            _id: savedCreatedUser._id,
+            address: '',
+            token: '',
+            createdAt: savedCreatedUser.createdAt,
+        });
+        await createdWallet.save();
+        const savedProfile = await this.createUserProfile(savedCreatedUser._id);
+        const profile = {
+            image: savedProfile.image,
+            displayName: savedProfile.displayName,
+            subscriptionPrice: savedProfile.subscriptionPrice,
+        };
+        const userBundled = {
+            _id: savedCreatedUser._id,
+            email: savedCreatedUser.email,
+            username: savedCreatedUser.username,
+            createdAt: savedCreatedUser.createdAt,
+            subscribers: savedCreatedUser.subscribers,
+            subscribedTo: savedCreatedUser.subscribedTo,
+            profile,
+        };
+        return userBundled;
     }
     async update(id, username, email, password) {
         return this.userModel.findByIdAndUpdate(id, { username, email, password });
     }
+    async updateProfile(profile, userId) {
+        try {
+            const update = await this.profileModel.findByIdAndUpdate(userId, profile, { new: true });
+            if (!update)
+                throw new exceptions_1.Exceptions.RecordNotFoundException();
+            return update;
+        }
+        catch (e) {
+            throw new exceptions_1.Exceptions.RecordNotFoundException();
+        }
+    }
     async deleteUser(id) {
+        await this.wallet2Model.deleteOne({ _id: id });
+        await this.profileModel.deleteOne({ _id: id });
         return this.userModel.deleteOne({ _id: id });
     }
 };
@@ -70,7 +128,9 @@ UsersService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_2.InjectModel)(user_schema_1.User.name)),
     __param(1, (0, mongoose_2.InjectModel)(wallet_2_schema_1.Wallet2.name)),
+    __param(2, (0, mongoose_2.InjectModel)(profile_schema_1.Profile.name)),
     __metadata("design:paramtypes", [mongoose_1.Model,
+        mongoose_1.Model,
         mongoose_1.Model])
 ], UsersService);
 exports.UsersService = UsersService;

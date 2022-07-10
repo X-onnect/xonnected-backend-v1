@@ -10,9 +10,14 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserDto = void 0;
+const profile_schema_1 = require("../../schema/profile.schema");
 const swagger_1 = require("@nestjs/swagger");
 class UserDto {
 }
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", String)
+], UserDto.prototype, "_id", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", String)
@@ -33,5 +38,9 @@ __decorate([
     (0, swagger_1.ApiProperty)(),
     __metadata("design:type", Array)
 ], UserDto.prototype, "subscribedTo", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)(),
+    __metadata("design:type", profile_schema_1.ProfileDto)
+], UserDto.prototype, "profile", void 0);
 exports.UserDto = UserDto;
 //# sourceMappingURL=user.dto.js.map

@@ -14,6 +14,7 @@ const users_controller_1 = require("./users.controller");
 const user_schema_1 = require("../schema/user.schema");
 const wallet_2_schema_1 = require("../schema/wallet-2.schema");
 const mongoose_1 = require("@nestjs/mongoose");
+const profile_schema_1 = require("../schema/profile.schema");
 let UsersModule = class UsersModule {
 };
 UsersModule = __decorate([
@@ -25,7 +26,8 @@ UsersModule = __decorate([
             passport_1.PassportModule,
             mongoose_1.MongooseModule.forFeature([
                 { name: user_schema_1.User.name, schema: user_schema_1.UserSchema },
-                { name: wallet_2_schema_1.Wallet2.name, schema: wallet_2_schema_1.Wallet2Schema }
+                { name: wallet_2_schema_1.Wallet2.name, schema: wallet_2_schema_1.Wallet2Schema },
+                { name: profile_schema_1.Profile.name, schema: profile_schema_1.ProfileSchema },
             ])
         ],
         exports: [users_service_1.UsersService],
