@@ -104,7 +104,12 @@ export class PostsService {
             throw new Exceptions.RecordNotFoundException();
         }
 
-        const canBeViewed = !post.isFree && !post.subscribers.includes(userId.toString()) && (post.createdBy.toString() !== userId.toString()) ? 
+        const canBeViewed = 
+            !post.isFree && 
+            !post.subscribers.includes(userId.toString()) && 
+            !post.subscribersFromCreator.includes(userId.toString()) &&
+            (post.createdBy.toString() !== userId.toString()) 
+        ? 
             false : 
             true;
         

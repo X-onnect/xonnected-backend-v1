@@ -87,8 +87,12 @@ let PostsService = class PostsService {
         if (!post) {
             throw new exceptions_1.Exceptions.RecordNotFoundException();
         }
-        const canBeViewed = !post.isFree && !post.subscribers.includes(userId.toString()) && (post.createdBy.toString() !== userId.toString()) ?
-            false :
+        const canBeViewed = !post.isFree &&
+            !post.subscribers.includes(userId.toString()) &&
+            !post.subscribersFromCreator.includes(userId.toString()) &&
+            (post.createdBy.toString() !== userId.toString())
+            ?
+                false :
             true;
         const comments = await this.postModel.find({ parent: postId }).exec();
         return {
