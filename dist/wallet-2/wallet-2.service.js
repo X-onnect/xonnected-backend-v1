@@ -82,6 +82,10 @@ let Wallet2Service = class Wallet2Service {
         const xummSdK = new xumm_sdk_1.XummSdk(env_1.env.XUMM_API_KEY, env_1.env.XUMM_API_SECRET);
         const receiverWallet = await this.wallet2Model.findById(receiverId).exec();
         const senderWallet = await this.wallet2Model.findById(senderId).exec();
+        if (amount <= 0) {
+            client.emit('request-payment', { error: 'Invalid amount. Cannot transfer 0 XRP or less.' });
+            return;
+        }
         if (receiverWallet && senderWallet) {
             const address = receiverWallet.address;
             const senderToken = senderWallet.token;
